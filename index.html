@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIZ — Sydney Ocean Conditions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky:#e8f4f8; --ocean:#0a7ea4; --deep:#064e6e; --foam:#f0faff;
+    --sand:#f5ede0; --text:#0d2b3e; --dim:#5a8a9f;
+    --border:rgba(10,126,164,0.15); --card:rgba(255,255,255,0.72);
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:'DM Mono',monospace;
+    color:var(--text);
+    background:
+      radial-gradient(120% 80% at 50% -10%, var(--foam) 0%, var(--sky) 45%, #d3e8ef 100%);
+    min-height:100%;
+    display:flex; align-items:center; justify-content:center;
+    padding:28px 18px;
+    position:relative; overflow-x:hidden;
+  }
+  /* faint horizon band */
+  body::after{
+    content:""; position:fixed; left:0; right:0; bottom:0; height:34vh;
+    background:linear-gradient(180deg, transparent 0%, rgba(10,126,164,0.06) 60%, rgba(6,78,110,0.12) 100%);
+    pointer-events:none;
+  }
+  .wrap{
+    width:100%; max-width:560px; position:relative; z-index:1;
+    animation:rise 0.7s cubic-bezier(0.2,0.7,0.2,1) both;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+
+  .brand{
+    text-align:center; margin-bottom:6px;
+  }
+  .brand .mark{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(64px,18vw,108px); line-height:0.82;
+    letter-spacing:6px; color:var(--deep);
+    text-shadow:0 2px 0 rgba(255,255,255,0.6);
+  }
+  .brand .tag{
+    font-family:'Playfair Display',serif; font-style:italic;
+    font-size:15px; color:var(--ocean); margin-top:10px; letter-spacing:0.3px;
+  }
+  .sub{
+    text-align:center; font-size:11px; letter-spacing:2px; text-transform:uppercase;
+    color:var(--dim); margin:14px 0 26px;
+  }
+
+  .cards{display:flex; flex-direction:column; gap:14px;}
+  a.card{
+    display:block; text-decoration:none; color:inherit;
+    background:var(--card); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px;
+    box-shadow:0 6px 26px rgba(10,126,164,0.10);
+    transition:transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    position:relative; overflow:hidden;
+  }
+  a.card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 12px 34px rgba(10,126,164,0.18);
+    border-color:rgba(10,126,164,0.35);
+  }
+  a.card::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:5px;
+    background:var(--ocean);
+  }
+  a.card.swim::before{background:var(--deep);}
+  .card-row{display:flex; align-items:baseline; justify-content:space-between; gap:10px;}
+  .card-title{
+    font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:2px;
+    color:var(--deep); line-height:1;
+  }
+  .pill{
+    font-size:9px; letter-spacing:1.5px; text-transform:uppercase;
+    padding:4px 9px; border-radius:20px; font-weight:500; white-space:nowrap;
+  }
+  .pill.live{background:rgba(26,158,110,0.15); color:#137a54;}
+  .pill.beta{background:rgba(212,144,10,0.16); color:#9a6705;}
+  .card-desc{font-size:12px; line-height:1.55; color:var(--text); margin-top:8px;}
+  .card-go{
+    font-size:11px; letter-spacing:1px; text-transform:uppercase;
+    color:var(--ocean); margin-top:12px; display:inline-flex; align-items:center; gap:6px;
+  }
+  .card-go .arr{transition:transform 0.18s ease;}
+  a.card:hover .card-go .arr{transform:translateX(4px);}
+
+  footer{
+    text-align:center; font-size:10px; color:var(--dim);
+    letter-spacing:0.5px; margin-top:30px; line-height:1.6;
+  }
+  footer a{color:var(--ocean); text-decoration:none;}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand">
+      <div class="mark">VIZ</div>
+      <div class="tag">Sydney ocean conditions, read from the water.</div>
+    </div>
+    <div class="sub">Choose a forecast</div>
+
+    <div class="cards">
+      <a class="card" href="/Forecast/">
+        <div class="card-row">
+          <span class="card-title">VIZ Forecast</span>
+          <span class="pill live">Live</span>
+        </div>
+        <div class="card-desc">Diveability conditions across 13 Sydney dive sites — visibility, swell and recent reports from the VIZ community.</div>
+        <span class="card-go">Open forecast <span class="arr">→</span></span>
+      </a>
+
+      <a class="card swim" href="/Manly-Swim/">
+        <div class="card-row">
+          <span class="card-title">Manly Ocean Swim</span>
+          <span class="pill beta">In testing</span>
+        </div>
+        <div class="card-desc">Swim conditions for South Steyne &amp; Cabbage Tree Bay — entry, swim and surge at a glance.</div>
+        <span class="card-go">Open swim forecast <span class="arr">→</span></span>
+      </a>
+    </div>
+
+    <footer>
+      VIZ Group · Marco Bordieri · Sydney<br>
+      <a href="mailto:vizgroupsydney@gmail.com">vizgroupsydney@gmail.com</a>
+    </footer>
+  </div>
+</body>
+</html>
