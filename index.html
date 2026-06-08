@@ -1264,6 +1264,9 @@
         Paste recent posts from the VIZ Facebook group below (sightings, visibility reports — copy as much or as little as you like). Tap <b>Summarise</b> to generate a short public blurb, review it, then <b>Publish</b> to push it live to the "In the bay this month" banner for all users.
       </div>
       <textarea id="admin-input" placeholder="Paste diver posts here…&#10;&#10;e.g. &quot;Dived CTB this morning, viz a solid 10m, three weedy seadragons near the kelp line and a big blue groper at Fairy Bower. Octopus out by the cabbages.&quot;"></textarea>
+      <div class="admin-hint" style="margin-top:8px;margin-bottom:4px;">…or upload a CSV / XLSX export from the Facebook group — the post text will be pulled in automatically:</div>
+      <input type="file" id="admin-file" accept=".csv,.xlsx,.xls" onchange="adminFile(this)" style="font-size:12px;color:var(--text);">
+      <div class="admin-status" id="admin-file-status" style="min-height:0;"></div>
       <div class="admin-row">
         <button class="admin-btn" id="admin-summarise-btn" onclick="adminSummarise()">Summarise</button>
         <button class="admin-btn secondary" onclick="document.getElementById('admin-input').value='';document.getElementById('admin-preview').classList.remove('visible');adminSetStatus('');">Clear</button>
@@ -3809,6 +3812,81 @@ function adminSetStatus(msg, kind) {
   el.className = 'admin-status' + (kind ? ' ' + kind : '');
 }
 
+function adminFileStatus(msg, kind) {
+  const el = document.getElementById('admin-file-status');
+  el.textContent = msg || '';
+  el.className = 'admin-status' + (kind ? ' ' + kind : '');
+}
+
+// Lazy-load SheetJS only when an XLSX is picked (keeps it off every page load)
+let _xlsxLib = null;
+function loadXlsxLib() {
+  if (_xlsxLib) return Promise.resolve(_xlsxLib);
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    s.onload = () => { _xlsxLib = window.XLSX; resolve(_xlsxLib); };
+    s.onerror = () => reject(new Error('Could not load spreadsheet reader'));
+    document.head.appendChild(s);
+  });
+}
+
+// Turn a sheet (array of row-objects) into readable text.
+// Prefers obvious "message/text/post/content" columns; falls back to all cells.
+function rowsToText(rows) {
+  if (!rows.length) return '';
+  const keys = Object.keys(rows[0]);
+  const preferred = keys.filter(k =>
+    /message|text|post|content|description|comment|body|story/i.test(k));
+  const useKeys = preferred.length ? preferred : keys;
+  return rows.map(r =>
+    useKeys.map(k => (r[k] == null ? '' : String(r[k]).trim()))
+           .filter(Boolean)
+           .join(' — ')
+  ).filter(Boolean).join('\n\n');
+}
+
+async function adminFile(inputEl) {
+  const file = inputEl.files && inputEl.files[0];
+  if (!file) return;
+  adminFileStatus('Reading ' + file.name + '…');
+  const name = file.name.toLowerCase();
+
+  try {
+    let text = '';
+    if (name.endsWith('.csv')) {
+      const raw = await file.text();
+      // Use SheetJS for robust CSV parsing too (handles quoted commas/newlines)
+      const XLSX = await loadXlsxLib();
+      const wb = XLSX.read(raw, { type: 'string' });
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' });
+      text = rowsToText(rows);
+    } else if (name.endsWith('.xlsx') || name.endsWith('.xls')) {
+      const XLSX = await loadXlsxLib();
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, { type: 'array' });
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' });
+      text = rowsToText(rows);
+    } else {
+      adminFileStatus('Unsupported file — use CSV or XLSX.', 'err');
+      return;
+    }
+
+    if (!text.trim()) {
+      adminFileStatus('No text found in that file.', 'err');
+      return;
+    }
+    // Append into the textarea (so you can also paste alongside it)
+    const ta = document.getElementById('admin-input');
+    ta.value = (ta.value.trim() ? ta.value.trim() + '\n\n' : '') + text;
+    adminFileStatus('Loaded ' + file.name + ' — ' + text.split('\n\n').length + ' rows added below. Review, then Summarise.', 'ok');
+  } catch (e) {
+    adminFileStatus('Could not read file: ' + e.message, 'err');
+  } finally {
+    inputEl.value = '';  // allow re-selecting the same file
+  }
+}
+
 async function adminSummarise() {
   const input = document.getElementById('admin-input').value.trim();
   if (!input) { adminSetStatus('Paste some posts first.', 'err'); return; }
@@ -3867,6 +3945,18 @@ async function adminPublish() {
   adminSetStatus('Publishing…');
 
   try {
+    // Replace mode: remove existing rows first so only the newest remains.
+    // PostgREST requires a filter on DELETE; id=gt.0 matches every row.
+    const del = await fetch(SIGHTINGS_TABLE_URL + '?id=gt.0', {
+      method: 'DELETE',
+      headers: {
+        'apikey': BB_SUPABASE_KEY,
+        'Authorization': 'Bearer ' + BB_SUPABASE_KEY,
+        'Prefer': 'return=minimal'
+      }
+    });
+    if (!del.ok && del.status !== 404) throw new Error('Supabase delete ' + del.status);
+
     const res = await fetch(SIGHTINGS_TABLE_URL, {
       method: 'POST',
       headers: {
@@ -3878,7 +3968,7 @@ async function adminPublish() {
       body: JSON.stringify({ summary: summary, raw_input: raw })
     });
     if (!res.ok) throw new Error('Supabase ' + res.status);
-    adminSetStatus('Published! It will appear in the banner for all users.', 'ok');
+    adminSetStatus('Published! It replaces the previous summary for all users.', 'ok');
     document.getElementById('admin-input').value = '';
     document.getElementById('admin-preview').classList.remove('visible');
     document.getElementById('admin-publish-row').style.display = 'none';
