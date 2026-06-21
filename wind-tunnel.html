@@ -1,0 +1,865 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Wind Tunnel — Flow Visualization Facility</title>
+<style>
+  :root{
+    --bg:#070a0f;
+    --panel:#0d1219;
+    --panel-2:#11171f;
+    --line:#1d2733;
+    --ink:#dfe9f3;
+    --ink-dim:#7d8c9c;
+    --ink-faint:#4a5663;
+    --amber:#ffb347;
+    --cyan:#56e3ff;
+    --hot:#ff6a5e;
+    --cool:#4ea3ff;
+    --radius:10px;
+    --mono:"SF Mono",ui-monospace,"JetBrains Mono","Roboto Mono",Menlo,Consolas,monospace;
+    --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    background:
+      radial-gradient(1200px 700px at 70% -10%, #0e1620 0%, transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  .wrap{
+    max-width:1180px;margin:0 auto;padding:20px 18px 60px;
+  }
+
+  /* ---- masthead ---- */
+  header{
+    display:flex;align-items:flex-end;justify-content:space-between;
+    gap:18px;flex-wrap:wrap;
+    padding-bottom:14px;margin-bottom:16px;
+    border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex;flex-direction:column;gap:4px}
+  .eyebrow{
+    font-family:var(--mono);font-size:11px;letter-spacing:.32em;
+    text-transform:uppercase;color:var(--amber);
+  }
+  h1{
+    margin:0;font-weight:300;font-size:clamp(26px,4.4vw,42px);
+    letter-spacing:-.01em;line-height:1;
+  }
+  h1 b{font-weight:600}
+  .sub{font-family:var(--mono);font-size:12px;color:var(--ink-dim);letter-spacing:.04em}
+  .readout{
+    font-family:var(--mono);font-size:11px;color:var(--ink-dim);
+    text-align:right;line-height:1.7;white-space:nowrap;
+  }
+  .readout b{color:var(--cyan);font-weight:500}
+  .readout .re{color:var(--amber)}
+
+  /* ---- main grid ---- */
+  .deck{display:grid;grid-template-columns:1fr 268px;gap:16px}
+  @media(max-width:820px){.deck{grid-template-columns:1fr}}
+
+  .stage{
+    position:relative;border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;background:#05070b;
+    box-shadow:0 30px 80px -40px #000 inset, 0 0 0 1px #000;
+    aspect-ratio:2/1;
+  }
+  @media(max-width:820px){.stage{aspect-ratio:3/2}}
+  canvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}
+
+  .stage .tag{
+    position:absolute;left:12px;top:11px;z-index:3;
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;
+    color:var(--ink-dim);text-transform:uppercase;
+    pointer-events:none;text-shadow:0 1px 6px #000;
+  }
+  .stage .tag b{color:var(--cyan);font-weight:500}
+  .corner{
+    position:absolute;width:14px;height:14px;border:1px solid var(--ink-faint);
+    opacity:.6;z-index:3;pointer-events:none;
+  }
+  .corner.tl{left:7px;top:7px;border-right:0;border-bottom:0}
+  .corner.tr{right:7px;top:7px;border-left:0;border-bottom:0}
+  .corner.bl{left:7px;bottom:7px;border-right:0;border-top:0}
+  .corner.br{right:7px;bottom:7px;border-left:0;border-top:0}
+
+  .hint{
+    position:absolute;right:12px;bottom:11px;z-index:3;pointer-events:none;
+    font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);
+    letter-spacing:.04em;text-shadow:0 1px 6px #000;
+  }
+
+  /* ---- console ---- */
+  .console{
+    border:1px solid var(--line);border-radius:var(--radius);
+    background:linear-gradient(180deg,var(--panel),var(--panel-2));
+    padding:15px 15px 17px;display:flex;flex-direction:column;gap:16px;
+  }
+  .group{display:flex;flex-direction:column;gap:9px}
+  .grp-label{
+    font-family:var(--mono);font-size:10px;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--ink-faint);
+    display:flex;align-items:center;gap:8px;
+  }
+  .grp-label::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  .shapes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .chip{
+    appearance:none;border:1px solid var(--line);background:#0a0f15;
+    color:var(--ink-dim);border-radius:7px;padding:9px 4px 7px;cursor:pointer;
+    font-family:var(--sans);font-size:10px;letter-spacing:.02em;
+    display:flex;flex-direction:column;align-items:center;gap:5px;
+    transition:.14s border-color,.14s color,.14s background;
+  }
+  .chip svg{width:30px;height:18px;display:block}
+  .chip svg *{stroke:var(--ink-dim);transition:.14s stroke,.14s fill}
+  .chip:hover{border-color:#2c3a49;color:var(--ink)}
+  .chip:hover svg *{stroke:var(--ink)}
+  .chip.on{border-color:var(--cyan);color:var(--cyan);background:#0c1820}
+  .chip.on svg *{stroke:var(--cyan)}
+
+  .row{display:flex;flex-direction:column;gap:6px}
+  .row .rl{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-family:var(--mono);font-size:11px;color:var(--ink-dim);letter-spacing:.02em;
+  }
+  .row .rl b{color:var(--ink);font-weight:500}
+  input[type=range]{
+    -webkit-appearance:none;appearance:none;width:100%;height:3px;border-radius:3px;
+    background:linear-gradient(90deg,var(--cyan) 0 var(--p,40%),#1a2530 var(--p,40%) 100%);
+    outline:none;cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+    background:#eaf6ff;border:2px solid #0a0f15;box-shadow:0 0 0 1px var(--cyan),0 2px 6px #000;
+  }
+  input[type=range]::-moz-range-thumb{
+    width:14px;height:14px;border-radius:50%;background:#eaf6ff;
+    border:2px solid #0a0f15;box-shadow:0 0 0 1px var(--cyan);
+  }
+
+  .togs{display:flex;gap:6px}
+  .tog{
+    flex:1;appearance:none;cursor:pointer;border:1px solid var(--line);
+    background:#0a0f15;color:var(--ink-dim);border-radius:7px;padding:8px 4px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+    transition:.14s;
+  }
+  .tog.on{border-color:var(--amber);color:var(--amber);background:#1a1408}
+
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .btn{
+    appearance:none;cursor:pointer;border:1px solid var(--line);
+    background:#0a0f15;color:var(--ink);border-radius:7px;padding:9px 6px;
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+    display:flex;align-items:center;justify-content:center;gap:6px;transition:.14s;
+  }
+  .btn:hover{border-color:#2c3a49;background:#0e141b}
+  .btn.primary{grid-column:span 2;border-color:#243949;background:#0c1a24;color:var(--cyan)}
+  .btn.primary:hover{background:#0f222e}
+  .btn svg{width:13px;height:13px}
+
+  .upload-note{
+    font-family:var(--mono);font-size:10px;line-height:1.6;color:var(--ink-faint);
+  }
+  input[type=file]{display:none}
+
+  footer{
+    margin-top:22px;font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);
+    letter-spacing:.03em;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+    border-top:1px solid var(--line);padding-top:12px;
+  }
+  footer b{color:var(--ink-dim);font-weight:500}
+
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="eyebrow">Subsonic Flow Facility · 2D</div>
+      <h1>Wind <b>Tunnel</b></h1>
+      <div class="sub">Lattice-Boltzmann smoke visualization — drop any shape in the stream</div>
+    </div>
+    <div class="readout" id="readout">
+      ≈&nbsp;<b id="rKmh">—</b> km/h&nbsp;·&nbsp;<span id="rMph">—</span> mph<br>
+      RE&nbsp;<span class="re" id="rRe">—</span>&nbsp;·&nbsp;Mach&nbsp;<span id="rMach">—</span><br>
+      <span id="rFps">—</span> fps
+    </div>
+  </header>
+
+  <div class="deck">
+    <div class="stage" id="stage">
+      <canvas id="cv"></canvas>
+      <div class="tag">FLOW <b>→</b> &nbsp;·&nbsp; <span id="tagMode">VORTICITY</span></div>
+      <div class="hint" id="hint">drag on the flow to sculpt the body</div>
+      <span class="corner tl"></span><span class="corner tr"></span>
+      <span class="corner bl"></span><span class="corner br"></span>
+    </div>
+
+    <aside class="console">
+      <div class="group">
+        <div class="grp-label">Test body</div>
+        <div class="shapes" id="shapes"></div>
+        <div class="togs"><button class="tog" id="tGround">On the ground</button></div>
+      </div>
+
+      <div class="group">
+        <div class="grp-label">Tunnel</div>
+        <div class="row">
+          <div class="rl"><span>Wind speed</span><b id="vU">—</b></div>
+          <input type="range" id="sU" min="2" max="16" value="10">
+        </div>
+        <div class="row">
+          <div class="rl"><span>Turbulence</span><b id="vNu">—</b></div>
+          <input type="range" id="sNu" min="0" max="100" value="72">
+        </div>
+        <div class="row">
+          <div class="rl"><span>Angle of attack</span><b id="vA">—</b></div>
+          <input type="range" id="sA" min="-25" max="25" value="0">
+        </div>
+        <div class="row">
+          <div class="rl"><span>Smoke density</span><b id="vSm">—</b></div>
+          <input type="range" id="sSm" min="8" max="56" value="34">
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="grp-label">Display</div>
+        <div class="togs">
+          <button class="tog on" id="tSmoke">Smoke</button>
+          <button class="tog on" id="tVort">Vorticity</button>
+          <button class="tog" id="tSpeed">Speed</button>
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="grp-label">Controls</div>
+        <div class="actions">
+          <button class="btn primary" id="bUpload">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7 9m5-5l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Upload a photo
+          </button>
+          <button class="btn" id="bErase">Erase</button>
+          <button class="btn" id="bClear">Clear body</button>
+          <button class="btn" id="bPause">Pause</button>
+          <button class="btn" id="bReset">Reset flow</button>
+        </div>
+        <div class="upload-note" id="uNote">Photo of a car, leaf, hand, logo… the dark part becomes the body.</div>
+        <input type="file" id="file" accept="image/*">
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+    <span><b>Method:</b> D2Q9 lattice-Boltzmann · half-way bounce-back walls · streakline tracers</span>
+    <span><b>Tip:</b> low turbulence = clean laminar lines · high = vortex shedding</span>
+  </footer>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   WIND TUNNEL — 2D Lattice-Boltzmann (D2Q9) solver
+   + streakline "smoke" tracers + obstacle from shapes/photos
+   ============================================================ */
+
+const cv  = document.getElementById('cv');
+const ctx = cv.getContext('2d', {alpha:false});
+
+// ---- lattice resolution (simulation grid) ----
+const XD = 280, YD = 140;          // grid cells (x downstream, y vertical)
+const N  = XD*YD;
+const idx = (x,y)=> x + y*XD;
+
+// D2Q9 directions: physical lattice vectors (ey positive = up = toward smaller row)
+//        C    N    S    E    W   NE   NW   SE   SW
+const ex = [ 0,  0,  0,  1, -1,  1, -1,  1, -1];
+const ey = [ 0,  1, -1,  0,  0,  1,  1, -1, -1];
+const w  = [4/9, 1/9,1/9,1/9,1/9, 1/36,1/36,1/36,1/36];
+const opp= [ 0,  2,  1,  4,  3,  8,  7,  6,  5]; // opposite-direction index
+
+// distribution buffers (current + streaming target)
+let f  = []; let f2 = [];
+for(let d=0; d<9; d++){ f[d]=new Float32Array(N); f2[d]=new Float32Array(N); }
+const ux = new Float32Array(N);
+const uy = new Float32Array(N);
+const rho= new Float32Array(N);
+const curl=new Float32Array(N);
+const barrier = new Uint8Array(N);
+let   bodyTex = null;   // non-null = a photo body is loaded (acts as a flag)
+let   groundMode=false; // treat the floor as solid ground (car on track)
+const GROUNDH=6;
+let   groundTop=YD-GROUNDH;
+let   aoa=0;            // angle of incidence / attack (degrees)
+let   lastImage=null;   // last uploaded Image, for re-rotating / re-seating
+let   photo=null;       // {img,dw,dh,cx,cy,deg} -> crisp hi-res body layer
+let   _keepFlow=false;  // rebuild geometry without restarting the flow
+const bodyLayer=document.createElement('canvas');
+
+// ---- simulation parameters (driven by UI) ----
+let u0   = 0.10;     // inflow speed (lattice units)
+let nu   = 0.018;    // kinematic viscosity
+let omega= 1/(3*nu+0.5);
+let running = true;
+let STEPS = 6;       // solver substeps per rendered frame
+
+function setEquil(i, vx, vy, r){
+  const u2 = 1.5*(vx*vx+vy*vy);
+  for(let d=0; d<9; d++){
+    const eu = ex[d]*vx + ey[d]*vy;
+    f[d][i] = w[d]*r*(1 + 3*eu + 4.5*eu*eu - u2);
+  }
+}
+
+function initFluid(){
+  for(let y=0;y<YD;y++) for(let x=0;x<XD;x++){
+    const i = idx(x,y);
+    // tiny vertical noise breaks the symmetry so vortices can shed
+    const vy0 = (Math.random()-0.5)*0.012*u0;
+    setEquil(i, u0, vy0, 1);
+    ux[i]=u0; uy[i]=vy0; rho[i]=1;
+  }
+}
+
+// keep the outer ring as a steady free stream
+function driveBoundaries(){
+  for(let x=0;x<XD;x++){ setEquil(idx(x,0),u0,0,1); setEquil(idx(x,YD-1),u0,0,1); }
+  for(let y=0;y<YD;y++){ setEquil(idx(0,y),u0,0,1); setEquil(idx(XD-1,y),u0,0,1); }
+}
+
+function collide(){
+  for(let y=1;y<YD-1;y++) for(let x=1;x<XD-1;x++){
+    const i = idx(x,y);
+    if(barrier[i]){ ux[i]=0; uy[i]=0; continue; }
+    let r=0, mx=0, my=0;
+    for(let d=0; d<9; d++){ const v=f[d][i]; r+=v; mx+=ex[d]*v; my+=ey[d]*v; }
+    const vx = mx/r, vy = my/r;
+    rho[i]=r; ux[i]=vx; uy[i]=vy;
+    const u2 = 1.5*(vx*vx+vy*vy);
+    for(let d=0; d<9; d++){
+      const eu = ex[d]*vx + ey[d]*vy;
+      const feq = w[d]*r*(1 + 3*eu + 4.5*eu*eu - u2);
+      f[d][i] += omega*(feq - f[d][i]);
+    }
+  }
+}
+
+// pull-scheme streaming with half-way bounce-back at solid walls
+function stream(){
+  for(let y=1;y<YD-1;y++) for(let x=1;x<XD-1;x++){
+    const i = idx(x,y);
+    if(barrier[i]) continue;
+    for(let d=0; d<9; d++){
+      const sx = x - ex[d];
+      const sy = y + ey[d];           // row increases downward
+      const si = idx(sx,sy);
+      f2[d][i] = barrier[si] ? f[opp[d]][i] : f[d][si];
+    }
+  }
+  for(let d=0; d<9; d++){ const t=f[d]; f[d]=f2[d]; f2[d]=t; }
+}
+
+function computeCurl(){
+  for(let y=1;y<YD-1;y++) for(let x=1;x<XD-1;x++){
+    const i = idx(x,y);
+    if(barrier[i]){ curl[i]=0; continue; }
+    curl[i] = (uy[idx(x+1,y)]-uy[idx(x-1,y)]) - (ux[idx(x,y+1)]-ux[idx(x,y-1)]);
+  }
+}
+
+function step(){
+  for(let s=0;s<STEPS;s++){ driveBoundaries(); collide(); stream(); }
+  computeCurl();
+  // NaN guard — if it ever blows up, gently reset
+  if(!isFinite(rho[idx(XD>>1,YD>>1)])) initFluid();
+}
+
+/* ----------------- RENDERING ----------------- */
+const off = document.createElement('canvas');
+off.width=XD; off.height=YD;
+const octx = off.getContext('2d');
+const img  = octx.createImageData(XD,YD);
+const pix  = img.data;
+
+let showVort=true, showSpeed=false, showSmoke=true;
+
+// background gradient baked per row
+const bgTop=[10,15,22], bgBot=[6,9,13];
+function bgColor(y,o){
+  const t=y/(YD-1);
+  o[0]=bgTop[0]+(bgBot[0]-bgTop[0])*t;
+  o[1]=bgTop[1]+(bgBot[1]-bgTop[1])*t;
+  o[2]=bgTop[2]+(bgBot[2]-bgTop[2])*t;
+}
+const _bg=[0,0,0];
+
+function renderField(){
+  const gt = groundMode?groundTop:YD;
+  for(let y=0;y<YD;y++){
+    bgColor(y,_bg);
+    for(let x=0;x<XD;x++){
+      const i=idx(x,y), p=i*4;
+      if(barrier[i]){
+        let br,bg2,bb;
+        if(groundMode && y>=groundTop){          // the track surface
+          const edge=(y===groundTop)?1:0;
+          br=24+edge*40; bg2=28+edge*48; bb=36+edge*58;
+        }else if(bodyTex){                        // dark base beneath the crisp photo
+          br=50; bg2=55; bb=64;
+        }else{
+          br=70; bg2=82; bb=98;                   // brushed steel body
+        }
+        const sh=1 - (y/YD)*0.20;
+        pix[p]=Math.min(255,br*sh); pix[p+1]=Math.min(255,bg2*sh); pix[p+2]=Math.min(255,bb*sh); pix[p+3]=255;
+        continue;
+      }
+      // glowing rim just outside the body (never traced along the ground)
+      let rim=0;
+      if(y<gt-1 && x>0&&x<XD-1&&y>0&&y<YD-1){
+        if( barrier[i-1] || barrier[i+1] ||
+            (barrier[i-XD]&&(y-1)<gt) || (barrier[i+XD]&&(y+1)<gt) ) rim=1;
+      }
+      let r=_bg[0], g=_bg[1], b=_bg[2];
+      if(showSpeed){
+        const sp = Math.min(1, Math.sqrt(ux[i]*ux[i]+uy[i]*uy[i])/(u0*1.7));
+        // dark teal -> warm white ramp
+        r += sp*sp*235; g += sp*180 + sp*sp*40; b += sp*120;
+      }
+      if(showVort){
+        let c = curl[i]*14;
+        c = c<-1?-1:c>1?1:c;
+        const a = Math.abs(c);
+        if(c>0){ r += 255*a*0.55; g += 90*a*0.55; b += 70*a*0.55; }   // hot
+        else   { r += 70*a*0.55;  g += 150*a*0.55; b += 255*a*0.55; } // cool
+      }
+      if(rim){ r+=110; g+=195; b+=225; }
+      pix[p]  = r>255?255:r;
+      pix[p+1]= g>255?255:g;
+      pix[p+2]= b>255?255:b;
+      pix[p+3]= 255;
+    }
+  }
+  octx.putImageData(img,0,0);
+}
+
+/* ----------------- SMOKE STREAKLINES ----------------- */
+let lanes=[];                 // each lane = {y0, pts:[{x,y,age}]}
+let NLANES=34;
+const ADVECT = 11;            // pixels(grid) per frame scaling for tracers
+const MAXAGE = 360;
+
+function buildLanes(){
+  lanes=[];
+  const margin=4;
+  for(let k=0;k<NLANES;k++){
+    const y0 = margin + (YD-2*margin)*(k+0.5)/NLANES;
+    lanes.push({y0, pts:[]});
+  }
+}
+
+function sampleVel(gx,gy,out){
+  // bilinear sample of velocity field
+  if(gx<0)gx=0; if(gx>XD-1.001)gx=XD-1.001;
+  if(gy<0)gy=0; if(gy>YD-1.001)gy=YD-1.001;
+  const x0=gx|0, y0=gy|0, fx=gx-x0, fy=gy-y0;
+  const i00=idx(x0,y0), i10=idx(x0+1,y0), i01=idx(x0,y0+1), i11=idx(x0+1,y0+1);
+  const a=(1-fx)*(1-fy), b=fx*(1-fy), c=(1-fx)*fy, d=fx*fy;
+  out[0]= ux[i00]*a+ux[i10]*b+ux[i01]*c+ux[i11]*d;
+  out[1]= uy[i00]*a+uy[i10]*b+uy[i01]*c+uy[i11]*d;
+}
+const _v=[0,0];
+
+function updateLanes(){
+  for(const lane of lanes){
+    // advect existing points
+    const pts=lane.pts;
+    for(let k=pts.length-1;k>=0;k--){
+      const pt=pts[k];
+      sampleVel(pt.x,pt.y,_v);
+      const nx=pt.x+_v[0]*ADVECT, ny=pt.y-_v[1]*ADVECT; // screen y is down
+      const gi=idx(Math.min(XD-1,Math.max(0,nx|0)), Math.min(YD-1,Math.max(0,ny|0)));
+      if(!barrier[gi]){ pt.x=nx; pt.y=ny; }              // ride around solids
+      pt.age++;
+      if(pt.x>=XD-1 || pt.age>MAXAGE) pts.splice(k,1);
+    }
+    // emit a fresh point at the inlet rake
+    const sy = lane.y0 + (Math.random()-0.5)*0.6;
+    if(!barrier[idx(2, Math.min(YD-1,Math.max(0,sy|0)))]){
+      pts.unshift({x:2, y:sy, age:0});
+    }
+    if(pts.length>520) pts.length=520;
+  }
+}
+
+let SX=1, SY=1; // grid->canvas scale
+function drawSmoke(){
+  ctx.save();
+  ctx.globalCompositeOperation='lighter';
+  ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.shadowColor='rgba(120,230,255,.55)';
+  for(const lane of lanes){
+    const pts=lane.pts;
+    if(pts.length<2) continue;
+    // newest points (near inlet) brightest, fading downstream
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x*SX, pts[0].y*SY);
+    for(let k=1;k<pts.length;k++){
+      const pt=pts[k];
+      // break the line if a big jump happened (split flow)
+      const dx=pt.x-pts[k-1].x, dy=pt.y-pts[k-1].y;
+      if(dx*dx+dy*dy>900){ ctx.moveTo(pt.x*SX,pt.y*SY); }
+      else ctx.lineTo(pt.x*SX, pt.y*SY);
+    }
+    ctx.strokeStyle='rgba(196,240,255,.34)';
+    ctx.lineWidth=1.15; ctx.shadowBlur=6;
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/* ----------------- COMPOSITE FRAME ----------------- */
+function render(){
+  renderField();
+  ctx.imageSmoothingEnabled=true;
+  ctx.imageSmoothingQuality='high';
+  ctx.drawImage(off,0,0,cv.width,cv.height);
+  if(showSmoke) drawSmoke();
+  if(photo){                                   // crisp, full-resolution body on top
+    ctx.save();
+    ctx.shadowColor='rgba(86,227,255,.45)';
+    ctx.shadowBlur=Math.max(6, cv.width*0.011);
+    ctx.imageSmoothingEnabled=true;
+    ctx.drawImage(bodyLayer,0,0);
+    ctx.restore();
+  }
+}
+
+/* ----------------- OBSTACLES ----------------- */
+function clearBarrier(){ barrier.fill(0); }
+
+// rasterize a shape defined by inside(localX,localY), rotated by deg about (cx,cy)
+function rasterize(cx,cy,deg,inside){
+  const a=-deg*Math.PI/180, ca=Math.cos(a), sa=Math.sin(a);
+  for(let y=0;y<YD;y++) for(let x=0;x<XD;x++){
+    const px=x-cx, py=y-cy;
+    const lx=px*ca - py*sa, ly=px*sa + py*ca;
+    if(inside(lx,ly)) barrier[idx(x,y)]=1;
+  }
+}
+const foilInside=(chord,thick)=>(lx,ly)=>{
+  const xc=lx/chord+0.5; if(xc<0||xc>1) return false;
+  const yt=5*thick*(0.2969*Math.sqrt(xc)-0.1260*xc-0.3516*xc*xc
+          +0.2843*xc*xc*xc-0.1015*xc*xc*xc*xc)*chord;
+  return Math.abs(ly)<=yt;
+};
+const wedgeInside=(s)=>(lx,ly)=>{
+  if(lx<-s||lx>s) return false;
+  const half=s*(1-(lx+s)/(2*s));     // flat face upstream, point downstream
+  return Math.abs(ly)<=half;
+};
+
+let currentShape='disc';
+function applyShape(name){
+  currentShape=name; lastImage=null; photo=null;
+  clearBarrier(); bodyTex=null;
+  const cx=Math.round(XD*0.34), cy=Math.round(YD*0.46);
+  if(name==='disc')        rasterize(cx,cy,0,   (lx,ly)=>lx*lx+ly*ly<=18*18);
+  else if(name==='square') rasterize(cx,cy,aoa, (lx,ly)=>Math.abs(lx)<=15&&Math.abs(ly)<=15);
+  else if(name==='plate')  rasterize(cx,cy,aoa, (lx,ly)=>Math.abs(lx)<=3&&Math.abs(ly)<=26);
+  else if(name==='wedge')  rasterize(cx,cy,aoa, wedgeInside(21));
+  else if(name==='foil')   rasterize(cx,cy,aoa, foilInside(76,0.14));
+  else if(name==='wing')   rasterize(cx,cy,aoa+10, foilInside(76,0.13));
+  finalizeBody();
+}
+
+// ---- ground plane & seating the body on it ----
+function stripGround(){ for(let y=groundTop;y<YD;y++) for(let x=0;x<XD;x++) barrier[idx(x,y)]=0; }
+function addGround(){ if(!groundMode) return; for(let y=groundTop;y<YD;y++) for(let x=0;x<XD;x++) barrier[idx(x,y)]=1; }
+function seatOnGround(){
+  if(!groundMode) return 0;
+  let maxY=-1;
+  for(let y=0;y<groundTop;y++) for(let x=0;x<XD;x++) if(barrier[idx(x,y)] && y>maxY) maxY=y;
+  if(maxY<0) return 0;
+  const shift=(groundTop-1)-maxY;          // drop the body until it rests on the floor
+  if(shift===0) return 0;
+  const nb=new Uint8Array(N);
+  for(let y=0;y<groundTop;y++) for(let x=0;x<XD;x++){
+    const i=idx(x,y); if(!barrier[i]) continue;
+    const ny=y+shift; if(ny<1||ny>=groundTop) continue;
+    nb[idx(x,ny)]=1;
+  }
+  barrier.set(nb);
+  return shift;
+}
+
+function finalizeBody(){
+  seatOnGround();
+  addGround();
+  buildPhotoLayer();
+  if(!_keepFlow) resetFlow();
+}
+
+function rebuildCurrentBody(keepFlow){
+  _keepFlow=!!keepFlow;
+  if(currentShape) applyShape(currentShape);
+  else if(lastImage) loadImageToBarrier(lastImage);
+  else { stripGround(); addGround(); buildPhotoLayer(); if(!keepFlow) resetFlow(); }
+  _keepFlow=false;
+}
+
+/* hi-res photo body layer — full-resolution photo masked by a smooth silhouette */
+function buildPhotoMask(){
+  const m=document.createElement('canvas'); m.width=XD; m.height=YD;
+  const mc=m.getContext('2d'); const id=mc.createImageData(XD,YD); const pd=id.data;
+  const gt=groundMode?groundTop:YD;
+  for(let i=0;i<N;i++){
+    const y=(i/XD)|0; const on = barrier[i] && y<gt;
+    pd[i*4]=255; pd[i*4+1]=255; pd[i*4+2]=255; pd[i*4+3]=on?255:0;
+  }
+  mc.putImageData(id,0,0); return m;
+}
+function buildPhotoLayer(){
+  if(!photo) return;
+  bodyLayer.width=cv.width; bodyLayer.height=cv.height;
+  const L=bodyLayer.getContext('2d');
+  L.clearRect(0,0,cv.width,cv.height);
+  const sxc=cv.width/XD, syc=cv.height/YD;
+  L.save();
+  L.translate(photo.cx*sxc, photo.cy*syc);
+  L.rotate(-photo.deg*Math.PI/180);
+  L.imageSmoothingEnabled=true; L.imageSmoothingQuality='high';
+  L.drawImage(photo.img, -photo.dw/2*sxc, -photo.dh/2*syc, photo.dw*sxc, photo.dh*syc);
+  L.restore();
+  const mask=buildPhotoMask();                 // soft-edged alpha cutout
+  L.globalCompositeOperation='destination-in';
+  L.imageSmoothingEnabled=true;
+  L.drawImage(mask,0,0,cv.width,cv.height);
+  L.globalCompositeOperation='source-over';
+}
+
+function resetFlow(){
+  initFluid();
+  driveBoundaries();
+  buildLanes();
+}
+
+/* ----------------- IMAGE UPLOAD -> SILHOUETTE ----------------- */
+function loadImageToBarrier(imgEl){
+  lastImage=imgEl; currentShape=null; setActiveChip(null);
+  const tmp=document.createElement('canvas'); tmp.width=XD; tmp.height=YD;
+  const t=tmp.getContext('2d');
+  const maxW=XD*0.58, maxH=YD*0.74;
+  const iw=imgEl.naturalWidth, ih=imgEl.naturalHeight;
+  const s=Math.min(maxW/iw, maxH/ih);
+  const dw=iw*s, dh=ih*s;
+  const gx=XD*0.33, gy=YD*0.46;
+  t.clearRect(0,0,XD,YD);
+  t.save(); t.translate(gx,gy); t.rotate(-aoa*Math.PI/180);
+  t.drawImage(imgEl, -dw/2, -dh/2, dw, dh); t.restore();
+  const d=t.getImageData(0,0,XD,YD).data;
+  clearBarrier(); bodyTex=new Float32Array(1);   // flag: a photo body exists
+  let solidCount=0;
+  for(let i=0;i<N;i++){
+    const p=i*4, R=d[p],G=d[p+1],B=d[p+2],al=d[p+3];
+    const lum=0.299*R+0.587*G+0.114*B, chroma=Math.max(R,G,B)-Math.min(R,G,B);
+    // BODY unless transparent, or a bright low-colour background (white wall/paper)
+    const background = al<40 || (lum>158 && chroma<42);
+    if(!background){ barrier[i]=1; solidCount++; }
+  }
+  cleanupBarrier();
+  const shift=seatOnGround();                     // drop onto the floor if ground is on
+  photo={img:imgEl, dw, dh, cx:gx, cy:gy+shift, deg:aoa};
+  addGround();
+  buildPhotoLayer();
+  if(!_keepFlow) resetFlow();
+  const frac=solidCount/N, note=document.getElementById('uNote');
+  if(frac>0.42) note.textContent='That filled most of the tunnel — try a brighter, plainer background.';
+  else if(frac<0.008) note.textContent='Barely caught a shape — try a bolder subject on white.';
+  else note.textContent='Loaded crisply. Try Angle of attack, or switch on “On the ground”.';
+}
+
+// remove single-cell speckles, keep the silhouette tidy
+function cleanupBarrier(){
+  const cp=barrier.slice();
+  for(let y=1;y<YD-1;y++) for(let x=1;x<XD-1;x++){
+    const i=idx(x,y);
+    let n=0;
+    n+=cp[idx(x-1,y)]+cp[idx(x+1,y)]+cp[idx(x,y-1)]+cp[idx(x,y+1)];
+    if(cp[i] && n===0) barrier[i]=0;      // lone solid -> remove
+    if(!cp[i] && n===4) barrier[i]=1;     // lone hole -> fill
+  }
+  // never let the body touch the rim
+  for(let x=0;x<XD;x++){ barrier[idx(x,0)]=0; barrier[idx(x,YD-1)]=0; }
+  for(let y=0;y<YD;y++){ barrier[idx(0,y)]=0; barrier[idx(XD-1,y)]=0; }
+}
+
+/* ----------------- PAINTING (mouse / touch) ----------------- */
+let painting=false, eraseMode=false, brush=3;
+function canvasToGrid(ev){
+  const r=cv.getBoundingClientRect();
+  const cxp=(ev.touches?ev.touches[0].clientX:ev.clientX)-r.left;
+  const cyp=(ev.touches?ev.touches[0].clientY:ev.clientY)-r.top;
+  return [ (cxp/r.width)*XD, (cyp/r.height)*YD ];
+}
+function paintAt(gx,gy){
+  bodyTex=null; photo=null; lastImage=null;   // switch from photo to hand-sculpting
+  const v = eraseMode?0:1;
+  for(let dy=-brush;dy<=brush;dy++) for(let dx=-brush;dx<=brush;dx++){
+    if(dx*dx+dy*dy>brush*brush) continue;
+    const x=Math.round(gx+dx), y=Math.round(gy+dy);
+    if(x>1&&x<XD-2&&y>1&&y<YD-2) barrier[idx(x,y)]=v;
+  }
+  currentShape=null; setActiveChip(null);
+}
+function pStart(ev){ ev.preventDefault(); painting=true; const[g,h]=canvasToGrid(ev); paintAt(g,h); }
+function pMove(ev){ if(!painting)return; ev.preventDefault(); const[g,h]=canvasToGrid(ev); paintAt(g,h); }
+function pEnd(){ painting=false; }
+cv.addEventListener('mousedown',pStart); window.addEventListener('mousemove',pMove); window.addEventListener('mouseup',pEnd);
+cv.addEventListener('touchstart',pStart,{passive:false}); cv.addEventListener('touchmove',pMove,{passive:false}); cv.addEventListener('touchend',pEnd);
+
+/* ----------------- UI WIRING ----------------- */
+const shapeDefs=[
+  {id:'disc',  label:'Cylinder', svg:'<circle cx="15" cy="9" r="6.5" fill="none" stroke-width="1.6"/>'},
+  {id:'square',label:'Block',    svg:'<rect x="8.5" y="2.5" width="13" height="13" rx="1" fill="none" stroke-width="1.6"/>'},
+  {id:'foil',  label:'Airfoil',  svg:'<path d="M4 9 Q14 3 27 9 Q14 11 4 9 Z" fill="none" stroke-width="1.6"/>'},
+  {id:'wing',  label:'Wing α',   svg:'<path d="M5 12 Q15 4 27 5 Q16 11 5 12 Z" fill="none" stroke-width="1.6"/>'},
+  {id:'wedge', label:'Wedge',    svg:'<path d="M9 3 L9 15 L23 9 Z" fill="none" stroke-width="1.6"/>'},
+  {id:'plate', label:'Plate',    svg:'<rect x="14" y="2" width="2.4" height="14" fill="none" stroke-width="1.6"/>'},
+];
+const shapesEl=document.getElementById('shapes');
+shapeDefs.forEach(s=>{
+  const b=document.createElement('button');
+  b.className='chip'; b.dataset.id=s.id;
+  b.innerHTML=`<svg viewBox="0 0 30 18">${s.svg}</svg>${s.label}`;
+  b.onclick=()=>{ applyShape(s.id); setActiveChip(s.id); };
+  shapesEl.appendChild(b);
+});
+function setActiveChip(id){
+  [...shapesEl.children].forEach(c=>c.classList.toggle('on',c.dataset.id===id));
+}
+
+// sliders
+const sU=document.getElementById('sU'), vU=document.getElementById('vU');
+const sNu=document.getElementById('sNu'), vNu=document.getElementById('vNu');
+const sSm=document.getElementById('sSm'), vSm=document.getElementById('vSm');
+const sA=document.getElementById('sA'), vA=document.getElementById('vA');
+function paintRange(el){ const p=(el.value-el.min)/(el.max-el.min)*100; el.style.setProperty('--p',p+'%'); }
+
+function applyU(){
+  u0 = +sU.value/100;                 // 0.02 .. 0.16 lattice units
+  vU.textContent=kmh()+' km/h';
+  paintRange(sU); updateReadout();
+}
+function applyNu(){
+  const t=+sNu.value/100;             // 0 .. 1  (more turbulence -> lower nu)
+  nu = 0.045 - t*0.039;               // 0.045 .. 0.006
+  omega=1/(3*nu+0.5);
+  vNu.textContent=Math.round(t*100)+'%';
+  paintRange(sNu); updateReadout();
+}
+function applySm(){
+  NLANES=+sSm.value; vSm.textContent=NLANES+' lines';
+  paintRange(sSm); buildLanes();
+}
+function applyA(){
+  aoa=+sA.value;
+  vA.textContent=(aoa>0?'+':'')+aoa+'°';
+  paintRange(sA);
+  rebuildCurrentBody(true);           // re-shape live, without restarting the flow
+}
+sU.oninput=applyU; sNu.oninput=applyNu; sSm.oninput=applySm; sA.oninput=applyA;
+
+// map the lattice wind speed to an indicative real F1 road speed (illustrative scale)
+function kmh(){ return Math.round(u0*2000); }   // U∞=0.10 -> ~200 km/h
+function updateReadout(){
+  const L=36;                                    // characteristic body size (cells)
+  const Re=Math.round(u0*L/nu);
+  const v=kmh(), mph=Math.round(v*0.621371), mach=(v/3.6/343);
+  document.getElementById('rRe').textContent=Re.toLocaleString();
+  document.getElementById('rKmh').textContent=v;
+  document.getElementById('rMph').textContent=mph;
+  document.getElementById('rMach').textContent=mach.toFixed(2);
+}
+
+// display toggles
+const tSmoke=document.getElementById('tSmoke'), tVort=document.getElementById('tVort'), tSpeed=document.getElementById('tSpeed');
+const tagMode=document.getElementById('tagMode');
+function syncTag(){
+  const m=[];
+  if(showVort)m.push('VORTICITY'); if(showSpeed)m.push('SPEED'); if(showSmoke)m.push('SMOKE');
+  tagMode.textContent=m.join(' + ')||'FLOW';
+}
+tSmoke.onclick=()=>{showSmoke=!showSmoke; tSmoke.classList.toggle('on',showSmoke); syncTag();};
+tVort.onclick =()=>{showVort=!showVort;  tVort.classList.toggle('on',showVort);  syncTag();};
+tSpeed.onclick=()=>{showSpeed=!showSpeed;tSpeed.classList.toggle('on',showSpeed);syncTag();};
+
+// action buttons
+document.getElementById('bClear').onclick=()=>{ clearBarrier(); bodyTex=null; photo=null; lastImage=null; currentShape=null; setActiveChip(null); addGround(); resetFlow(); };
+document.getElementById('bReset').onclick=resetFlow;
+const bErase=document.getElementById('bErase');
+bErase.onclick=()=>{ eraseMode=!eraseMode; bErase.classList.toggle('on',eraseMode);
+  bErase.textContent=eraseMode?'Erasing':'Erase';
+  bErase.style.borderColor=eraseMode?'var(--hot)':''; bErase.style.color=eraseMode?'var(--hot)':''; };
+const bPause=document.getElementById('bPause');
+bPause.onclick=()=>{ running=!running; bPause.textContent=running?'Pause':'Play'; };
+
+// ground / track toggle
+const tGround=document.getElementById('tGround');
+tGround.onclick=()=>{
+  groundMode=!groundMode;
+  tGround.classList.toggle('on',groundMode);
+  if(currentShape||lastImage) rebuildCurrentBody(false);   // reseat and restart cleanly
+  else { stripGround(); addGround(); buildPhotoLayer(); resetFlow(); }
+};
+
+// upload
+const fileInput=document.getElementById('file');
+document.getElementById('bUpload').onclick=()=>fileInput.click();
+fileInput.onchange=e=>{
+  const file=e.target.files[0]; if(!file)return;
+  const url=URL.createObjectURL(file);
+  const im=new Image();
+  im.onload=()=>{ loadImageToBarrier(im); URL.revokeObjectURL(url); };
+  im.onerror=()=>{ document.getElementById('uNote').textContent="Couldn't read that image — try a JPG or PNG."; };
+  im.src=url;
+};
+
+/* ----------------- CANVAS SIZE ----------------- */
+function resize(){
+  const r=cv.getBoundingClientRect();
+  const dpr=Math.min(2,window.devicePixelRatio||1);
+  cv.width=Math.round(r.width*dpr);
+  cv.height=Math.round(r.height*dpr);
+  SX=cv.width/XD; SY=cv.height/YD;
+  if(photo) buildPhotoLayer();
+}
+window.addEventListener('resize',resize);
+
+/* ----------------- MAIN LOOP ----------------- */
+let last=performance.now(), fpsSmooth=60, fpsEl=document.getElementById('rFps');
+function loop(now){
+  const dt=now-last; last=now;
+  fpsSmooth=fpsSmooth*0.9 + (1000/Math.max(1,dt))*0.1;
+  fpsEl.textContent=Math.round(fpsSmooth);
+  if(running){ step(); updateLanes(); }
+  render();
+  requestAnimationFrame(loop);
+}
+
+/* ----------------- BOOT ----------------- */
+function boot(){
+  resize();
+  applyU(); applyNu(); applySm(); syncTag();
+  aoa=+sA.value; vA.textContent=(aoa>0?'+':'')+aoa+'°'; paintRange(sA);
+  applyShape('disc'); setActiveChip('disc');
+  requestAnimationFrame(loop);
+}
+boot();
+</script>
