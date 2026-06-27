@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>FALLLINE — VIZ Ballistics</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Barlow+Condensed:wght@500;600;700&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --panel2: #1c232c;
+    --ink: #e8eef4;
+    --muted: #7d8a99;
+    --line: #2a323d;
+    --hot: #ff6b35;
+    --cool: #38b6ff;
+    --sky-top: #0a1622;
+    --sky-bot: #16384f;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Barlow Condensed', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  .wrap { max-width: 920px; margin: 0 auto; padding: 18px 14px 40px; }
+
+  header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px; }
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(34px, 9vw, 58px);
+    letter-spacing: 2px;
+    line-height: 0.92;
+  }
+  h1 .accent { color: var(--hot); }
+  .tag { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+
+  .subhead { font-family:'Space Mono',monospace; font-size:11px; color:var(--muted); margin-bottom:16px; letter-spacing:0.5px; }
+
+  .stage {
+    position: relative;
+    height: 320px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bot) 100%);
+    border: 1px solid var(--line);
+    margin-bottom: 14px;
+  }
+  .ground {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 28px;
+    background: linear-gradient(180deg, #243140, #161b22);
+    border-top: 2px solid #36506b;
+  }
+  .ground::after {
+    content: ''; position: absolute; top: 6px; left: 0; right: 0; height: 1px;
+    background: repeating-linear-gradient(90deg, #3a526b 0 8px, transparent 8px 20px);
+  }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  /* HUD over the stage */
+  .clock {
+    position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+    font-family: 'Space Mono', monospace; font-weight: 700;
+    font-size: 30px; letter-spacing: 2px;
+    background: rgba(0,0,0,0.45); padding: 4px 16px; border-radius: 8px;
+    backdrop-filter: blur(4px); z-index: 3;
+  }
+  .clock small { font-size: 12px; color: var(--muted); }
+
+  .legend { position:absolute; top:12px; left:12px; font-family:'Space Mono',monospace; font-size:11px; line-height:1.8; z-index:3; }
+  .legend .row { display:flex; align-items:center; gap:6px; }
+  .dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+
+  /* live telemetry bottom of stage */
+  .telemetry {
+    position:absolute; bottom:34px; left:12px; right:12px; z-index:3;
+    display:grid; grid-template-columns:1fr 1fr; gap:8px;
+    font-family:'Space Mono',monospace; font-size:11px; pointer-events:none;
+  }
+  .tcard { background:rgba(0,0,0,0.4); border-radius:8px; padding:6px 10px; backdrop-filter:blur(4px); }
+  .tcard.a { border-left:3px solid var(--hot); }
+  .tcard.b { border-left:3px solid var(--cool); }
+  .tcard .tl { display:flex; justify-content:space-between; }
+  .tcard .tv { font-weight:700; }
+
+  .fire-btn {
+    width: 100%; padding: 16px; margin-bottom: 18px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 3px;
+    color: #fff; background: linear-gradient(135deg, var(--hot), #d6481c);
+    border: none; border-radius: 12px; cursor: pointer;
+    box-shadow: 0 6px 0 #a83613; transition: transform .05s, box-shadow .05s;
+  }
+  .fire-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #a83613; }
+  .fire-btn:disabled { opacity:0.55; cursor:default; }
+
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+  .slot { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+  .slot h3 { font-family:'Space Mono',monospace; font-size:11px; letter-spacing:1px; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+  select {
+    width: 100%; padding: 9px 10px; font-family:'Barlow Condensed',sans-serif; font-size:16px; font-weight:600;
+    background: var(--panel2); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; cursor:pointer;
+  }
+  .stats { margin-top: 10px; font-family:'Space Mono',monospace; font-size:11px; }
+
+  .gunpic {
+    margin-top: 10px; height: 78px;
+    background: var(--panel2); border: 1px solid var(--line); border-radius: 8px;
+    display: grid; place-items: center; padding: 10px 14px;
+  }
+  .gunpic svg { width: 100%; height: 100%; max-height: 58px; display:block; }
+  .gunpic.a { color: var(--hot); }
+  .gunpic.b { color: var(--cool); }
+  .stats .line { display:flex; justify-content:space-between; padding:3px 0; border-bottom:1px dashed var(--line); }
+  .stats .line:last-child { border-bottom:none; }
+  .stats .v { color: var(--ink); font-weight:700; }
+  .stats .v.big { font-size:15px; }
+
+  .angle-box { background: var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin-bottom:18px; }
+  .angle-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; }
+  .angle-head .label { font-family:'Space Mono',monospace; font-size:11px; letter-spacing:1px; color:var(--muted); }
+  .angle-val { font-family:'Bebas Neue',sans-serif; font-size:34px; color:var(--cool); }
+  input[type=range]{ -webkit-appearance:none; width:100%; height:6px; border-radius:6px; background:linear-gradient(90deg,var(--cool),var(--hot)); outline:none; }
+  input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:26px; height:26px; border-radius:50%; background:#fff; border:3px solid var(--hot); cursor:pointer; }
+  input[type=range]::-moz-range-thumb{ width:26px; height:26px; border-radius:50%; background:#fff; border:3px solid var(--hot); cursor:pointer; }
+  .angle-note { font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); margin-top:8px; }
+
+  .drag-toggle { display:flex; align-items:center; gap:8px; margin-top:12px; font-family:'Space Mono',monospace; font-size:11px; color:var(--muted); }
+  .switch { position:relative; width:42px; height:22px; }
+  .switch input{ opacity:0; width:0; height:0; }
+  .slider-sw { position:absolute; cursor:pointer; inset:0; background:var(--line); border-radius:22px; transition:.2s; }
+  .slider-sw:before { content:''; position:absolute; height:16px; width:16px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:.2s; }
+  input:checked + .slider-sw { background: var(--hot); }
+  input:checked + .slider-sw:before { transform: translateX(20px); }
+
+  .speed-toggle { display:flex; align-items:center; gap:8px; margin-top:10px; font-family:'Space Mono',monospace; font-size:11px; color:var(--muted); }
+
+  .results { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .rcard { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px; }
+  .rcard .name { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:0.5px; margin-bottom:8px; }
+  .rcard .metric { display:flex; justify-content:space-between; font-family:'Space Mono',monospace; font-size:11px; padding:4px 0; }
+  .rcard .metric .v { font-weight:700; }
+  .rcard.a .name { color:var(--hot); }
+  .rcard.b .name { color:var(--cool); }
+
+  .disclaimer { font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); margin-top:20px; line-height:1.6; border-top:1px solid var(--line); padding-top:14px; }
+
+  @media (max-width:560px){ .compare,.results{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>FALL<span class="accent">LINE</span></h1>
+    <span class="tag">VIZ // BALLISTICS</span>
+  </header>
+  <p class="subhead">FIRE TWO ROUNDS · WATCH THEM CLIMB, STALL & DROP IN REAL TIME · WITH OR WITHOUT AIR DRAG</p>
+
+  <div class="stage" id="stage">
+    <div class="legend" id="legend"></div>
+    <div class="clock" id="clock">0.00<small>s</small></div>
+    <canvas id="canvas"></canvas>
+    <div class="telemetry">
+      <div class="tcard a">
+        <div class="tl"><span>HEIGHT</span><span class="tv" id="hA">0 m</span></div>
+        <div class="tl"><span>RANGE</span><span class="tv" id="dA">0 m</span></div>
+        <div class="tl"><span>SPEED</span><span class="tv" id="sA">0 km/h</span></div>
+      </div>
+      <div class="tcard b">
+        <div class="tl"><span>HEIGHT</span><span class="tv" id="hB">0 m</span></div>
+        <div class="tl"><span>RANGE</span><span class="tv" id="dB">0 m</span></div>
+        <div class="tl"><span>SPEED</span><span class="tv" id="sB">0 km/h</span></div>
+      </div>
+    </div>
+    <div class="ground"></div>
+  </div>
+
+  <button class="fire-btn" id="fireBtn">▲ FIRE ▲</button>
+
+  <div class="compare">
+    <div class="slot">
+      <h3><span class="dot" style="background:var(--hot)"></span>ROUND A</h3>
+      <select id="gunA"></select>
+      <div class="gunpic a" id="picA"></div>
+      <div class="stats" id="statsA"></div>
+    </div>
+    <div class="slot">
+      <h3><span class="dot" style="background:var(--cool)"></span>ROUND B</h3>
+      <select id="gunB"></select>
+      <div class="gunpic b" id="picB"></div>
+      <div class="stats" id="statsB"></div>
+    </div>
+  </div>
+
+  <div class="angle-box">
+    <div class="angle-head">
+      <span class="label">LAUNCH ANGLE FROM HORIZONTAL</span>
+      <span class="angle-val" id="angleVal">90°</span>
+    </div>
+    <input type="range" id="angle" min="1" max="90" value="90" step="1">
+    <div class="angle-note" id="angleNote">Straight up — bullet returns near the firing point (near-zero range).</div>
+    <div class="drag-toggle">
+      <label class="switch"><input type="checkbox" id="dragChk" checked><span class="slider-sw"></span></label>
+      <span id="dragLabel">AIR DRAG: ON (realistic)</span>
+    </div>
+    <div class="speed-toggle">
+      <label class="switch"><input type="checkbox" id="rtChk" checked><span class="slider-sw"></span></label>
+      <span id="rtLabel">REAL TIME: ON (actual seconds)</span>
+    </div>
+  </div>
+
+  <div class="results">
+    <div class="rcard a">
+      <div class="name" id="rnameA">—</div>
+      <div class="metric"><span>Flight time</span><span class="v" id="rtimeA">—</span></div>
+      <div class="metric"><span>Peak height</span><span class="v" id="rapexA">—</span></div>
+      <div class="metric"><span>Range (horizontal)</span><span class="v" id="rrangeA">—</span></div>
+      <div class="metric"><span>Impact speed</span><span class="v" id="rimpA">—</span></div>
+    </div>
+    <div class="rcard b">
+      <div class="name" id="rnameB">—</div>
+      <div class="metric"><span>Flight time</span><span class="v" id="rtimeB">—</span></div>
+      <div class="metric"><span>Peak height</span><span class="v" id="rapexB">—</span></div>
+      <div class="metric"><span>Range (horizontal)</span><span class="v" id="rrangeB">—</span></div>
+      <div class="metric"><span>Impact speed</span><span class="v" id="rimpB">—</span></div>
+    </div>
+  </div>
+
+  <p class="disclaimer">
+    PHYSICS NOTE — Drag model uses simplified quadratic air resistance (½·ρ·v²·Cd·A/m) integrated with RK4 at 1 ms steps; sea-level air density 1.225 kg/m³, g = 9.81 m/s². Real flight is messier: bullets tumble after apex, wind matters, and a round fired into the air comes down at unpredictable speeds and angles. This is an educational physics toy, not a safety guide. Firing into the air is illegal in most places and kills people every year.
+  </p>
+</div>
+
+<script>
+const GUNS = [
+  { id:'9mm',    name:'9mm Pistol',         v0:380,  mass:0.0075, k:0.0017,  note:'Handgun · 124gr FMJ',        type:'pistol' },
+  { id:'45acp',  name:'.45 ACP Pistol',     v0:260,  mass:0.0148, k:0.0019,  note:'Handgun · 230gr FMJ',        type:'pistol' },
+  { id:'556',    name:'5.56 NATO (AR-15)',  v0:940,  mass:0.0040, k:0.00090, note:'Rifle · 62gr boat-tail',     type:'ar' },
+  { id:'762',    name:'7.62 NATO (.308)',   v0:840,  mass:0.0095, k:0.00070, note:'Rifle · 147gr FMJ',          type:'ar' },
+  { id:'3006',   name:'.30-06 Hunting',     v0:880,  mass:0.0097, k:0.00072, note:'Rifle · 150gr spitzer',      type:'bolt' },
+  { id:'50bmg',  name:'.50 BMG',            v0:880,  mass:0.0418, k:0.00038, note:'Heavy rifle · 647gr',         type:'heavy' },
+  { id:'12ga',   name:'12-Gauge Slug',      v0:500,  mass:0.0285, k:0.0042,  note:'Shotgun · 1oz rifled slug',  type:'shotgun' },
+  { id:'musket', name:'Musket Ball (1800s)',v0:300,  mass:0.0320, k:0.0033,  note:'Black powder · .69 round ball', type:'musket' },
+  { id:'cannon', name:'6-Pounder Cannon',   v0:440,  mass:2.7,    k:0.00060, note:'Napoleonic field gun · iron ball', type:'cannon' },
+];
+
+// Inline SVG silhouettes — schematic, dependency-free, tinted via currentColor
+function gunSVG(type){
+  const svgs = {
+    pistol: '<path d="M10 22 H78 V32 H64 L60 30 H40 L38 40 Q38 56 26 56 H22 Q14 56 14 46 L18 32 H10 Z"/><circle cx="24" cy="26" r="2.5"/>',
+    ar: '<g><rect x="6" y="27" width="150" height="7"/><rect x="120" y="22" width="34" height="4"/><path d="M58 34 H96 V40 H110 V34 H120 V50 H110 V44 H96 L92 34 Z"/><rect x="96" y="42" width="12" height="18" rx="1.5"/><path d="M30 34 H44 V42 L28 56 H18 L30 42 Z"/><path d="M6 34 H22 V46 H6 Z"/></g>',
+    bolt: '<g><rect x="8" y="28" width="150" height="6"/><rect x="120" y="25" width="38" height="3"/><rect x="80" y="20" width="44" height="6" rx="3"/><circle cx="90" cy="23" r="1.6"/><circle cx="114" cy="23" r="1.6"/><path d="M60 34 H78 V40 H64 Q54 40 50 56 L40 70 H30 L44 52 Q48 40 40 40 H8 V34 Z"/><path d="M96 34 H104 L102 46 H98 Z"/></g>',
+    heavy: '<path d="M4 28 H180 V30 H172 V26 H168 V30 H164 V26 H160 V30 H156 V33 H120 V37 H150 V41 H70 L66 47 H54 V41 H40 L36 60 H26 V41 H12 Z"/><rect x="100" y="62" width="3" height="14"/><path d="M101 70 L88 84 M103 70 L116 84" stroke="currentColor" stroke-width="3" fill="none"/>',
+    shotgun: '<g><rect x="6" y="27" width="156" height="6"/><rect x="120" y="24" width="42" height="3"/><path d="M52 33 H72 V39 H58 Q50 39 46 52 L36 68 H26 L40 50 Q44 39 36 39 H8 V33 Z"/><rect x="88" y="33" width="26" height="7" rx="1.5"/><path d="M78 33 H86 L84 44 H80 Z"/></g>',
+    musket: '<g><rect x="4" y="29" width="168" height="5"/><path d="M50 34 H66 V39 H56 Q46 39 40 52 L26 72 H16 L32 50 Q36 39 28 39 H6 V34 Z"/><path d="M92 29 V21 L99 23 L100 29 Z"/><circle cx="96" cy="24" r="1.8"/><rect x="72" y="34" width="3" height="9"/></g>',
+    cannon: '<g><path d="M30 38 H150 L160 42 V52 L150 56 H40 Q30 56 30 46 Z"/><circle cx="62" cy="72" r="16"/><circle cx="62" cy="72" r="6" fill="var(--panel2)"/><circle cx="120" cy="72" r="16"/><circle cx="120" cy="72" r="6" fill="var(--panel2)"/><path d="M40 56 L70 70 H115 L145 56 Z"/></g>'
+  };
+  const vb = { pistol:'0 0 88 64', ar:'0 0 156 64', bolt:'0 0 164 76', heavy:'0 0 184 88', shotgun:'0 0 168 72', musket:'0 0 176 78', cannon:'0 0 170 96' }[type] || '0 0 160 80';
+  return `<svg viewBox="${vb}" fill="currentColor" preserveAspectRatio="xMidYMid meet">${svgs[type]||''}</svg>`;
+}
+
+const G = 9.81, RHO = 1.225;
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+function resize(){ const r=canvas.getBoundingClientRect(); canvas.width=r.width*devicePixelRatio; canvas.height=r.height*devicePixelRatio; ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0); drawStatic(); }
+window.addEventListener('resize', resize);
+
+// RK4 integration with quadratic drag; samples full trajectory with time stamps
+function simulate(gun, angleDeg, useDrag){
+  const dt = 0.001;
+  const th = angleDeg * Math.PI/180;
+  let x=0, y=0, vx=Math.cos(th)*gun.v0, vy=Math.sin(th)*gun.v0;
+  let t=0, apex=0, maxRange=0;
+  const traj=[];
+  const kd = useDrag ? gun.k : 0;
+  function accel(vx,vy){
+    const v=Math.hypot(vx,vy);
+    const ad = 0.5*RHO*v*kd;
+    return { ax:-ad*vx, ay:-G - ad*vy };
+  }
+  let guard=0;
+  while(y>=0 && guard<300000){
+    if(guard % 10 === 0) traj.push({x,y,t,v:Math.hypot(vx,vy)});
+    const a1=accel(vx,vy);
+    const a2=accel(vx+a1.ax*dt/2, vy+a1.ay*dt/2);
+    const a3=accel(vx+a2.ax*dt/2, vy+a2.ay*dt/2);
+    const a4=accel(vx+a3.ax*dt, vy+a3.ay*dt);
+    vx += (a1.ax+2*a2.ax+2*a3.ax+a4.ax)*dt/6;
+    vy += (a1.ay+2*a2.ay+2*a3.ay+a4.ay)*dt/6;
+    x += vx*dt; y += vy*dt; t += dt;
+    if(y>apex) apex=y;
+    if(Math.abs(x)>maxRange) maxRange=Math.abs(x);
+    guard++;
+  }
+  traj.push({x,y:0,t,v:Math.hypot(vx,vy)});
+  return { time:t, apex, range:Math.abs(x), impact:Math.hypot(vx,vy), traj };
+}
+
+function fmtTime(s){ return s<60 ? s.toFixed(2)+' s' : Math.floor(s/60)+'m '+(s%60).toFixed(1)+'s'; }
+function fmtDist(m){ return m>=1000 ? (m/1000).toFixed(2)+' km' : Math.round(m)+' m'; }
+
+function fillSelect(sel, def){ GUNS.forEach(g=>{ const o=document.createElement('option'); o.value=g.id; o.textContent=g.name; sel.appendChild(o); }); sel.value=def; }
+const gunA=document.getElementById('gunA'), gunB=document.getElementById('gunB');
+fillSelect(gunA,'9mm'); fillSelect(gunB,'3006');
+function gunById(id){ return GUNS.find(g=>g.id===id); }
+
+let lastA, lastB;
+function recompute(){
+  const ang=+document.getElementById('angle').value;
+  const useDrag=document.getElementById('dragChk').checked;
+  const A=gunById(gunA.value), B=gunById(gunB.value);
+  lastA=simulate(A,ang,useDrag); lastB=simulate(B,ang,useDrag);
+
+  document.getElementById('statsA').innerHTML = statBlock(A);
+  document.getElementById('statsB').innerHTML = statBlock(B);
+  document.getElementById('picA').innerHTML = gunSVG(A.type);
+  document.getElementById('picB').innerHTML = gunSVG(B.type);
+
+  document.getElementById('rnameA').textContent=A.name;
+  document.getElementById('rnameB').textContent=B.name;
+  document.getElementById('rtimeA').textContent=fmtTime(lastA.time);
+  document.getElementById('rtimeB').textContent=fmtTime(lastB.time);
+  document.getElementById('rapexA').textContent=fmtDist(lastA.apex);
+  document.getElementById('rapexB').textContent=fmtDist(lastB.apex);
+  document.getElementById('rrangeA').textContent=fmtDist(lastA.range);
+  document.getElementById('rrangeB').textContent=fmtDist(lastB.range);
+  document.getElementById('rimpA').textContent=Math.round(lastA.impact)+' m/s ('+Math.round(lastA.impact*3.6)+' km/h)';
+  document.getElementById('rimpB').textContent=Math.round(lastB.impact)+' m/s ('+Math.round(lastB.impact*3.6)+' km/h)';
+
+  document.getElementById('legend').innerHTML =
+    `<div class="row"><span class="dot" style="background:var(--hot)"></span>${A.name}</div>`+
+    `<div class="row"><span class="dot" style="background:var(--cool)"></span>${B.name}</div>`;
+
+  // reset telemetry
+  document.getElementById('hA').textContent='0 m'; document.getElementById('dA').textContent='0 m'; document.getElementById('sA').textContent='0 km/h';
+  document.getElementById('hB').textContent='0 m'; document.getElementById('dB').textContent='0 m'; document.getElementById('sB').textContent='0 km/h';
+  document.getElementById('clock').innerHTML='0.00<small>s</small>';
+  drawStatic();
+}
+function statBlock(g){
+  return `<div class="line"><span>Muzzle vel.</span><span class="v big">${g.v0} m/s</span></div>`+
+         `<div class="line"><span></span><span class="v">${Math.round(g.v0*3.6)} km/h</span></div>`+
+         `<div class="line"><span>Bullet mass</span><span class="v">${(g.mass*1000).toFixed(g.mass<1?1:0)} g</span></div>`+
+         `<div class="line"><span>${g.note}</span><span class="v"></span></div>`;
+}
+
+document.getElementById('angle').addEventListener('input', e=>{
+  const a=+e.target.value;
+  document.getElementById('angleVal').textContent=a+'°';
+  const note = a>=90 ? 'Straight up — bullet returns near the firing point (near-zero range).'
+            : a>=75 ? 'Steep — comes down close but drifts downrange.'
+            : a===45 ? '45° — maximum range in a vacuum.'
+            : 'Lower angle trades height for horizontal distance.';
+  document.getElementById('angleNote').textContent=note;
+  recompute();
+});
+document.getElementById('dragChk').addEventListener('change', e=>{
+  document.getElementById('dragLabel').textContent = 'AIR DRAG: '+(e.target.checked?'ON (realistic)':'OFF (vacuum)');
+  recompute();
+});
+document.getElementById('rtChk').addEventListener('change', e=>{
+  document.getElementById('rtLabel').textContent = 'REAL TIME: '+(e.target.checked?'ON (actual seconds)':'OFF (sped up to 6s max)');
+});
+gunA.addEventListener('change', recompute);
+gunB.addEventListener('change', recompute);
+
+// sample trajectory at an arbitrary time via linear interpolation
+function sampleAt(sim, t){
+  const tr=sim.traj;
+  if(t<=0) return {x:tr[0].x, y:tr[0].y, v:tr[0].v};
+  if(t>=sim.time) { const last=tr[tr.length-1]; return {x:last.x, y:last.y, v:last.v}; }
+  // binary search
+  let lo=0, hi=tr.length-1;
+  while(lo<hi-1){ const mid=(lo+hi)>>1; if(tr[mid].t<t) lo=mid; else hi=mid; }
+  const a=tr[lo], b=tr[hi];
+  const f=(t-a.t)/(b.t-a.t || 1);
+  return { x:a.x+(b.x-a.x)*f, y:a.y+(b.y-a.y)*f, v:a.v+(b.v-a.v)*f };
+}
+
+function viewScale(){
+  const wpx = canvas.width/devicePixelRatio, hpx = canvas.height/devicePixelRatio;
+  const padX=44, padTop=46, groundY=hpx-30;
+  const maxX=Math.max(lastA.range, lastB.range, 1);
+  const maxY=Math.max(lastA.apex, lastB.apex, 1);
+  const verticalish = maxX < maxY*0.15;
+  const sx = (wpx - padX*2)/maxX;
+  const sy = (groundY - padTop)/maxY;
+  return { padX, padTop, groundY, maxX, maxY, sx, sy, verticalish, wpx };
+}
+function projX(x, idx, vs){
+  if(vs.verticalish){ return vs.padX + (vs.wpx - vs.padX*2)*(idx===0?0.40:0.60); }
+  return vs.padX + x*vs.sx;
+}
+function projY(y, vs){ return vs.groundY - y*vs.sy; }
+
+function drawCurve(sim, color, upto, idx, vs){
+  ctx.strokeStyle=color; ctx.lineWidth=2; ctx.globalAlpha=0.45; ctx.beginPath();
+  let started=false;
+  for(const p of sim.traj){
+    if(p.t>upto) break;
+    const X=projX(p.x,idx,vs), Y=projY(p.y,vs);
+    started?ctx.lineTo(X,Y):ctx.moveTo(X,Y); started=true;
+  }
+  ctx.stroke(); ctx.globalAlpha=1;
+  const pos=sampleAt(sim, upto);
+  const X=projX(pos.x,idx,vs), Y=projY(pos.y,vs);
+  ctx.fillStyle=color; ctx.shadowColor=color; ctx.shadowBlur=12;
+  ctx.beginPath(); ctx.arc(X,Y,5,0,7); ctx.fill(); ctx.shadowBlur=0;
+  return pos;
+}
+
+function drawStatic(){
+  if(!lastA||!lastB) return;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const vs=viewScale();
+  drawCurve(lastA,'#ff6b35',lastA.time,0,vs);
+  drawCurve(lastB,'#38b6ff',lastB.time,1,vs);
+}
+
+let animating=false;
+function fire(){
+  if(animating||!lastA||!lastB) return;
+  animating=true;
+  const btn=document.getElementById('fireBtn'); btn.disabled=true;
+  if(navigator.vibrate) navigator.vibrate(40);
+
+  const realDur=Math.max(lastA.time,lastB.time);
+  const realtime=document.getElementById('rtChk').checked;
+  // in real-time mode, 1 play-second = 1 real second. Otherwise compress to <=6s.
+  const playMax = realtime ? realDur : Math.min(Math.max(realDur,1.2),6);
+  const speedup = realDur/playMax;
+
+  const clock=document.getElementById('clock');
+  const hA=document.getElementById('hA'), dA=document.getElementById('dA'), sA=document.getElementById('sA');
+  const hB=document.getElementById('hB'), dB=document.getElementById('dB'), sB=document.getElementById('sB');
+  let start;
+  function frame(now){
+    if(start===undefined) start=now;
+    const elapsedPlay=(now-start)/1000;
+    const realT=Math.min(elapsedPlay*speedup, realDur);
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const vs=viewScale();
+    const pA=drawCurve(lastA,'#ff6b35',Math.min(realT,lastA.time),0,vs);
+    const pB=drawCurve(lastB,'#38b6ff',Math.min(realT,lastB.time),1,vs);
+
+    clock.innerHTML = realT.toFixed(2)+'<small>s</small>';
+    hA.textContent=Math.round(Math.max(pA.y,0))+' m'; dA.textContent=fmtDist(Math.abs(pA.x)); sA.textContent=Math.round(pA.v*3.6)+' km/h';
+    hB.textContent=Math.round(Math.max(pB.y,0))+' m'; dB.textContent=fmtDist(Math.abs(pB.x)); sB.textContent=Math.round(pB.v*3.6)+' km/h';
+
+    if(realT<realDur){ requestAnimationFrame(frame); }
+    else {
+      clock.innerHTML = realDur.toFixed(2)+'<small>s</small>';
+      // final readouts = peak height + total range + impact speed
+      hA.textContent=Math.round(lastA.apex)+' m'; dA.textContent=fmtDist(lastA.range); sA.textContent=Math.round(lastA.impact*3.6)+' km/h';
+      hB.textContent=Math.round(lastB.apex)+' m'; dB.textContent=fmtDist(lastB.range); sB.textContent=Math.round(lastB.impact*3.6)+' km/h';
+      animating=false; btn.disabled=false;
+      if(navigator.vibrate) navigator.vibrate([30,40,80]);
+    }
+  }
+  requestAnimationFrame(frame);
+}
+document.getElementById('fireBtn').addEventListener('click', fire);
+
+resize(); recompute();
+</script>
+</body>
+</html>
