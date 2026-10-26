@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Marco &amp; Kelly 2027</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: one reading column; timelines are stacked bar rows, tables scroll in their own box */
+:root {
+  --bg: #f6f7f4; --surface: #ffffff; --fg: #1d2421; --muted: #5d6862; --line: #dde2dc; --grid: #e9ece7; --link: #2a62b8;
+  --kids: #2f6fd0; --kids-soft: #dce8fa; --pair: #1f8a66; --pair-soft: #d8efe5;
+  --kelly: #8a4fb3; --kelly-soft: #efe2f7; --usa: #c46a1d; --usa-soft: #f8e6d4;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141917; --surface: #1c2320; --fg: #e7ece8; --muted: #9aa59f; --line: #2e3833; --grid: #252e2a; --link: #8db6f2;
+    --kids: #7aa9f0; --kids-soft: #1f3150; --pair: #5cc79f; --pair-soft: #183a2e;
+    --kelly: #c79ae6; --kelly-soft: #3a2848; --usa: #eaa45e; --usa-soft: #45301c;
+    color-scheme: dark;
+  }
+  img.map { filter: invert(0.88) hue-rotate(180deg); }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.5; }
+.wrap {
+  max-width: 760px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: calc(20px + env(safe-area-inset-top, 0px)) calc(48px + env(safe-area-inset-bottom, 0px));
+}
+header { display: grid; gap: 4px; margin-bottom: 8px; }
+h1 { font-family: var(--display); font-size: 1.75rem; line-height: 1.15; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+.updated { color: var(--muted); font-size: 0.9rem; margin: 0; }
+h2 { font-family: var(--display); font-size: 1.35rem; line-height: 1.2; margin: 2.2em 0 0.5em; text-wrap: balance; }
+h3 { font-family: var(--display); font-size: 1.1rem; line-height: 1.25; margin: 1.8em 0 0.4em; text-wrap: balance; }
+p, ul { margin: 0.6em 0; }
+ul { padding-left: 1.2em; }
+li { margin: 0.25em 0; }
+li p { margin: 0; }
+li[data-checked] { list-style: none; margin-left: -1.2em; }
+a { color: var(--link); }
+img.map { display: block; width: 100%; height: auto; max-width: 100%; margin: 12px 0; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+.tbl { overflow-x: auto; margin: 0.8em 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); -webkit-overflow-scrolling: touch; }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+th { font-weight: 700; background: var(--grid); }
+tr:last-child td { border-bottom: 0; }
+
+/* timelines */
+.trip { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 14px; margin: 12px 0; }
+.trip h4 { font-family: var(--display); font-size: 1.1rem; margin: 0; }
+.trip .meta { color: var(--muted); font-size: 0.9rem; margin: 2px 0 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.85rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 3px; border: 1.5px solid; display: inline-block; }
+.chart { display: grid; gap: 12px; }
+.axis, .track { position: relative; }
+.axis { height: 18px; font-size: 0.75rem; color: var(--muted); }
+.axis span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.axis span.first { transform: none; }
+.row { display: grid; gap: 4px; }
+.row-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.row-name { font-weight: 700; min-width: 0; }
+.row-dates { color: var(--muted); font-size: 0.85rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.row-note { color: var(--muted); font-size: 0.85rem; }
+.track { height: 16px; border-radius: 8px; }
+.bar { position: absolute; top: 0; bottom: 0; border-radius: 8px; border: 1.5px solid; min-width: 6px; }
+.k-kids { background: var(--kids-soft); border-color: var(--kids); }
+.k-pair { background: var(--pair-soft); border-color: var(--pair); }
+.k-kelly { background: var(--kelly-soft); border-color: var(--kelly); }
+.k-usa { background: var(--usa-soft); border-color: var(--usa); }
+.ends { display: flex; justify-content: space-between; gap: 10px; font-size: 0.85rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
+@media (min-width: 640px) { h1 { font-size: 2.2rem; } .trip { padding: 20px 22px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Marco &amp; Kelly, 2027</h1>
+  <p class="updated">Revision 39 · updated Mon 26 Oct 2026, 20:25 Sydney time</p>
+</header>
+<main>
+<h2 id="route-map">Route map</h2>
+<p>Spring is Europe only: four days in Amsterdam, then Annecy, along the Riviera, down to Puglia, then Rome, Venice and Milan with Luca. The late-summer trip is one eastbound loop through San Francisco, Venice and Crete. The maps below show every stop in each region.</p>
+<img class="map" src="map-spring.png" alt="Spring route map: Amsterdam, Annecy, Camogli, Valle d'Itria, Matera, Rome, Venice, Milan, Maranello" width="1008" height="1005">
+<img class="map" src="map-summer.png" alt="Late-summer route map: Lake Tahoe, San Francisco, the Dolomites, the Eolie and Crete" width="1008" height="832">
+<p>Jump to: <a href="#amsterdam-10-15-may-5-nights">Amsterdam</a> · <a href="#annecy-with-giulia-15-18-may-3-nights">Annecy</a> · <a href="#liguria-marco-and-kelly-18-20-may-2-nights">Liguria</a> · <a href="#puglia-marco-and-kelly-20-25-may-5-nights-hire-car">Puglia</a> · <a href="#italy-with-luca-rome-venice-and-brianza-25-may-4-jun">Italy with Luca</a> · <a href="#late-summer-trip-20-aug-17-sep">Late-summer trip</a></p>
+<h2 id="timeline">Timeline</h2>
+<div class="trip" id="tl-spring"></div>
+<div class="trip" id="tl-summer"></div>
+<p>The flight home leaves Milan on Fri 4 Jun and lands Sat 5 Jun. Leave runs Mon 10 May to Fri 4 Jun, 20 working days, and you&#39;re back at work on Mon 7 Jun.</p>
+<h2 id="the-plan-at-a-glance">The plan at a glance</h2>
+<p>Twenty days of leave buy four weeks in Europe, Mon 10 May to Sat 5 Jun 2027, flying out on Sunday. The trip is planned backwards from the end: ten days with Luca, from Rome up to Milan, before you fly home, with Kelly leaving for Maine on 27 May. Before that come four days in Amsterdam, Giulia&#39;s long weekend in Annecy, then the Riviera and Puglia, warm but before the summer crowds. The other 10 days of spring long service leave stay in the bank.</p>
+<ul><li><p><strong>Amsterdam, 10 – 15 May.</strong> Land at Schiphol on Monday for four full days in Amsterdam.</p></li><li><p><strong>Annecy, 15 – 18 May.</strong> Fly in from Amsterdam on Saturday for three nights over the Whitsun weekend; Giulia comes down from Paris by train. Then the train under the Alps to the Riviera.</p></li><li><p><strong>Liguria, 18 – 20 May.</strong> Two midweek nights in Camogli for San Fruttuoso and Portofino.</p></li><li><p><strong>Puglia, 20 – 25 May.</strong> Four full days: a masseria in the Valle d&#39;Itria over the weekend, with Lecce as a day out, then Matera (5 nights).</p></li><li><p><strong>Italy with Luca and Vittoria, 25 May – 4 Jun.</strong> Three days in Rome, with Kelly until she flies to Maine on 27 May, then Venice with Vittoria for the weekend, and Milan, Monza and Ferrari. Caroline collects Luca on Fri 4 Jun for the UK, and you fly home, landing Sat 5 Jun.</p></li></ul>
+<p>Giulia joins you in Annecy for the Whitsun long weekend (Whit Monday, 17 May, is a French public holiday), about 3h45 from Paris by TGV.</p>
+<p>Luca comes last, from Tue 25 May, so he misses part of NSW Term 2; that&#39;s Caroline&#39;s call. Vittoria is still at school, so she joins you in Venice for the weekend of 29–30 May, then in the evenings and on 2 June, Italy&#39;s Republic Day. Luca doesn&#39;t overlap with Giulia unless she comes to Milan for a weekend.</p>
+<h3 id="late-summer-trip-20-aug-17-sep">Late-summer trip, 20 Aug – 17 Sep</h3>
+<p>Kelly&#39;s house at Lake Tahoe in high summer, then the Dolomites, Eolie and Crete as the European summer ends: a second trip of 20 working days, one eastbound loop.</p>
+<ul><li><p><strong>California, 20 – 28 Aug.</strong> Kelly&#39;s house at Lake Tahoe, then San Francisco.</p></li><li><p><strong>Dolomites, 29 Aug – 5 Sep.</strong> Val di Funes, below the Alpe di Siusi, Val Badia, while the huts are open.</p></li><li><p><strong>Eolie, 5 – 10 Sep.</strong> Salina, then Stromboli.</p></li><li><p><strong>Crete, 10 – 15 Sep.</strong> A village near Chania and the car-free south coast at Loutro; home on 17 Sep.</p></li></ul>
+<h3 id="leave-20-20-days-all-long-service-with-about-6-left-in-the-bank">Leave: 20 + 20 days, all long service, with about 6 left in the bank</h3>
+<div class="tbl"><table><thead><tr><th>Trip</th><th>Away</th><th>Leave dates</th><th>Working days of leave</th><th>Public holidays inside</th></tr></thead><tbody><tr><td>Spring trip</td><td>Sun 9 May – Sat 5 Jun</td><td>Mon 10 May – Fri 4 Jun</td><td>20, long service</td><td>None</td></tr><tr><td>Late-summer trip</td><td>Fri 20 Aug (night flight) – Fri 17 Sep</td><td>Mon 23 Aug – Fri 17 Sep</td><td>20, long service</td><td>None; you land on a Friday evening with the weekend ahead</td></tr><tr><td>Total</td><td></td><td></td><td>40 of long service, no annual leave</td><td></td></tr></tbody></table></div>
+<p>Balances you gave, with no leave taken: 43.72 days of long service and 13.87 annual by 1 Feb 2027; 46.31 long service and 25.56 annual by 1 Sep 2027. After 20 days in spring and 20 in September, about 6 days of long service are left, and your annual leave is untouched. The spring trip flies out on a Sunday and the late-summer trip on a Friday night after work, so neither costs leave for the flight out.</p>
+<h2 id="why-these-places">Why these places</h2>
+<p>Every stop is there for one of three reasons: it was on your list, it&#39;s in its best season on these dates, or it gives the off-the-beaten-track version of a place instead of the headline one.</p>
+<div class="tbl"><table><thead><tr><th>Destination</th><th>Where you stay or go</th><th>Why these</th></tr></thead><tbody><tr><td>France</td><td>Annecy</td><td>Annecy on your list: the lake, the old town and the mountains above it, and an easy train for Giulia on her Whitsun long weekend. Paris was dropped. The train under the Alps to Italy avoids one-way car-hire fees.</td></tr><tr><td>Italy: Liguria</td><td>Camogli, Portofino, San Fruttuoso, Sestri Levante</td><td>Not on your list: two midweek days of coastal walking between Annecy and Puglia, at about 20–23 °C before the beach season. It also avoids repeating your May 2026 Cinque Terre trip.</td></tr><tr><td>Italy: Puglia</td><td>The Valle d&#39;Itria (Cisternino or Locorotondo), Lecce for a day, Matera</td><td>On your list. Late May is about 22–26 °C, before the heat and the summer crowds; the weekend goes to the countryside and Matera comes after it.</td></tr><tr><td>Italy: Rome</td><td>The centro storico (Monti or Campo de&#39; Fiori)</td><td>Added for Luca&#39;s first Italy: the Colosseum, the Pantheon, the Trevi and St Peter&#39;s are the postcard set, done in three days. Caroline lands there with him and Kelly flies out from there.</td></tr><tr><td>Italy: Milan and Brianza</td><td>Concorezzo and Brianza, Milan, Monza, Modena and Maranello, Lake Como, two nights in Venice</td><td>Milan on your list; the last week, with Luca, and Vittoria in the evenings and on 2 June. The day trips are built on Luca&#39;s love of cars, planes and machines. Venice is the one deliberately touristy stop, added for Luca&#39;s first visit, with two nights there so you see it early and late without the crowds, and a weekend so Vittoria can join.</td></tr><tr><td>Dolomites (late-summer trip)</td><td>Val di Funes, Val Gardena hamlets, Alpe di Siusi, Val Badia</td><td>On your list, but closed for walking from February to May. Late August and early September have the huts open and settled weather, as the August crowds thin. Lago di Braies and Seceda skipped.</td></tr><tr><td>Eolie (late-summer trip)</td><td>Salina, Stromboli</td><td>On your list. Early September has a 26 °C sea and summer ferries, with the islands emptying after the Italian holidays; Salina is the quiet green one.</td></tr><tr><td>Greece (late-summer trip)</td><td>West Crete and its south coast</td><td>Crete on your list. Mid-September is warm and past the peak; villages and the car-free south coast instead of the resort strip. The Cyclades were dropped.</td></tr><tr><td>USA (late-summer trip)</td><td>Lake Tahoe (Kelly&#39;s house), San Francisco</td><td>Kelly&#39;s house is at Tahoe. Late August is high summer at the lake, warm enough to swim, after California&#39;s schools have gone back and before Labor Day; San Francisco is the jump-off for Europe. Wildfire smoke is the risk at this time of year.</td></tr><tr><td>Netherlands</td><td>Amsterdam</td><td>On your list. Mid-May comes after King&#39;s Day, the Dutch May holidays and the tulip crowds; four days in Amsterdam, with its quieter neighbourhoods and the countryside a short bike ride away.</td></tr></tbody></table></div>
+<h2 id="fixed-dates-and-assumptions">Fixed dates and assumptions</h2>
+<p>The plan is set from the end: Luca&#39;s ten days from Rome to Milan and Kelly&#39;s Maine dates fix late May, and the trip opens with Giulia&#39;s Whitsun weekend in Annecy.</p>
+<div class="tbl"><table><thead><tr><th>Date (2027)</th><th>What</th><th>Effect on the plan</th></tr></thead><tbody><tr><td>15 – 17 May</td><td>Whitsun long weekend in France (Whit Monday 17 May)</td><td>Giulia&#39;s days off: she joins you in Annecy</td></tr><tr><td>Late May</td><td>Giro d&#39;Italia&#39;s final stage</td><td>Check whether it finishes in Milan or Rome</td></tr><tr><td>From late May</td><td>Caroline brings Luca to Rome</td><td>Luca&#39;s ten days, Tue 25 May – Fri 4 Jun, the last of the trip</td></tr><tr><td>27 May – 6 Jun</td><td>Kelly in Maine from 28 May for nine days</td><td>Kelly flies from Rome on Thu 27 May</td></tr><tr><td>Until early June</td><td>Vittoria at school (Lombardy calendar)</td><td>Venice on 29–30 May, then evenings and 2 June</td></tr><tr><td>2 Jun</td><td>Republic Day in Italy</td><td>Maranello with Vittoria and Luca</td></tr><tr><td>Mid-Sep</td><td>Giulia&#39;s Pasteur year ends; most Dolomites huts close around 20 Sep</td><td>Late-summer trip: the Dolomites before the huts close</td></tr></tbody></table></div>
+<p><strong>Assumptions, flag any that are wrong:</strong></p>
+<ul><li><p>Leave counts in working days. Fly out on Sun 9 May and land at Schiphol on Monday; Mon 10 May to Fri 4 Jun is exactly 20 working days, with no NSW public holidays inside. Fly home from Milan on Fri 4 Jun, land in Sydney Sat 5 Jun, back at work Mon 7 Jun.</p></li><li><p>Kelly flies out with you on Sun 9 May and is with you until Thu 27 May. She then flies to Maine for nine days (28 May – 6 Jun) and home to Sydney from there.</p></li><li><p>Kelly would rather not spend long hours on buses or in cars, so road legs are kept short, with trains or flights for the long hops.</p></li><li><p>Passports: Marco Italian and Australian, Kelly Australian and US, Luca Australian and British.</p></li><li><p>Caroline brings Luca to Rome on Tue 25 May and collects him in Milan on Fri 4 Jun to take him to Blackburn.</p></li><li><p>Comfortable, characterful mid-range places to stay: guesthouses, agriturismi, masserie. No chains or resorts.</p></li></ul>
+<h2 id="europe-the-netherlands-annecy-liguria-puglia-then-italy-with-luca-10-may-4-jun">Europe: the Netherlands, Annecy, Liguria, Puglia, then Italy with Luca (10 May – 4 Jun)</h2>
+<p>Europe starts with four days in Amsterdam, then Annecy, where Giulia joins you for her Whitsun long weekend; then Marco and Kelly have the Riviera and Puglia. Luca comes last: Caroline brings him to Rome on Tue 25 May for three days with you and Kelly, then you go north to Venice and home to Brianza, with Vittoria at the weekend and on 2 June. Kelly flies to Maine from Rome on Thu 27 May.</p>
+<h3 id="amsterdam-10-15-may-5-nights">Amsterdam, 10 – 15 May (5 nights)</h3>
+<p>Land at Schiphol on Mon 10 May and take the 15-minute train into town, for four full days in Amsterdam. Mid-May is about 15–19 °C, with King&#39;s Day (27 Apr), the Dutch May school holidays and Ascension (6 May) behind you, and you leave before the Whitsun weekend. Sat 15 May: 15 minutes back to Schiphol and fly to Geneva (about 1h30).</p>
+<h3 id="annecy-with-giulia-15-18-may-3-nights">Annecy, with Giulia, 15 – 18 May (3 nights)</h3>
+<div class="tbl"><table><thead><tr><th>Day</th><th>Where</th><th>What</th></tr></thead><tbody><tr><td>Sat 15</td><td>Annecy</td><td>Fly Amsterdam to Geneva, then about 45 min by car or bus to Annecy. Giulia comes down from Paris by TGV (about 3h45)</td></tr><tr><td>Sun 16</td><td>Annecy</td><td>With Giulia: the lake path by bike to Talloires, or the walk up Mont Veyrier or the Semnoz above the lake (2–3 h); the old town&#39;s canals in the evening</td></tr><tr><td>Mon 17</td><td>Annecy</td><td>Whit Monday, Giulia&#39;s day off: a boat across the lake and lunch in a lakeside village, then her TGV back to Paris</td></tr><tr><td>Tue 18</td><td>Camogli</td><td>Train to Chambéry (50 min), the high-speed train under the Alps to Turin, then on to Genoa and Camogli (about 6 h in all)</td></tr></tbody></table></div>
+<p>Annecy is busy on a French long weekend, so book the room early, in the old town or a lakeside village such as Talloires or Menthon.</p>
+<p>Direct high-speed trains from Chambéry through Turin to Milan resumed in April 2025, after a 2023 landslide closed the line; Trenitalia runs four a day (<a href="https://www.railin.net/en/passenger/paris-milan-trains-resume-after-reopening-of-the-frejus-tunnel/" target="_blank" rel="noopener">Railin</a>). From Turin it&#39;s about 2 h on to Genoa and 30 min more to Camogli, and going by train avoids the large fee for dropping a French hire car in Italy.</p>
+<h3 id="liguria-marco-and-kelly-18-20-may-2-nights">Liguria, Marco and Kelly, 18 – 20 May (2 nights)</h3>
+<p>Tue 18 May: the train from Annecy through Turin and Genoa. Late May on the Riviera is about 20–23 °C, green and in flower, before the June beach season, and these are weekday nights. This stretch of coast is different from the Cinque Terre you saw in May 2026.</p>
+<div class="tbl"><table><thead><tr><th>Dates</th><th>Base</th><th>Nights</th><th>What to do</th></tr></thead><tbody><tr><td>18 – 20 May</td><td>Camogli</td><td>2</td><td>The harbour and the focaccia di Recco on arrival. Next day the promontory path to San Fruttuoso abbey (2–3 h) and the boat on to Portofino, then back to Camogli by boat or bus for sunset on the waterfront. Thu 20 May: 40 min by train to Genoa airport</td></tr></tbody></table></div>
+<h3 id="puglia-marco-and-kelly-20-25-may-5-nights-hire-car">Puglia, Marco and Kelly, 20 – 25 May (5 nights, hire car)</h3>
+<p>Thu 20 May: fly Genoa to Bari (about 1h30) and pick up the car; that leaves four full days. Late May in Puglia is about 22–26 °C, before the heat and the summer crowds, and warm enough for a first swim. The weekend goes to the countryside, and Matera comes after it, once the weekend visitors have left.</p>
+<div class="tbl"><table><thead><tr><th>Dates</th><th>Base</th><th>Nights</th><th>What to do</th></tr></thead><tbody><tr><td>20 – 23 May</td><td>Valle d&#39;Itria (Cisternino or Locorotondo)</td><td>3</td><td>About 1 h from Bari. A masseria stay; white towns, dry-stone countryside by bike, Cisternino&#39;s butcher-grills. A day in Lecce (about 1 h) for the baroque old town and pasticciotto, or Polignano and the coast</td></tr><tr><td>23 – 25 May</td><td>Matera (Basilicata)</td><td>2</td><td>About 1h15 by car. A cave room in the Sassi, the walk across the ravine in the Murgia park (2–3 h). Tue 25 May: an hour to Bari airport and fly to Rome (about 1h10)</td></tr></tbody></table></div>
+<h3 id="italy-with-luca-rome-venice-and-brianza-25-may-4-jun">Italy with Luca: Rome, Venice and Brianza, 25 May – 4 Jun</h3>
+<div class="tbl"><table><thead><tr><th>Day</th><th>Where</th><th>What</th></tr></thead><tbody><tr><td>Tue 25</td><td>Rome</td><td>Fly Bari to Rome with Kelly; Caroline lands with Luca. An evening walk to Piazza Navona and a first gelato</td></tr><tr><td>Wed 26</td><td>Rome</td><td>The Colosseum and Forum (book the timed entry), the Pantheon, a coin in the Trevi; pizza al taglio and supplì</td></tr><tr><td>Thu 27</td><td>Rome</td><td>The climb up St Peter&#39;s dome and Castel Sant&#39;Angelo. Kelly flies Rome to Boston for Maine; Trastevere in the evening</td></tr><tr><td>Fri 28</td><td>Venice</td><td>Frecciarossa from Rome (about 3h45). The vaporetto down the Grand Canal at sunset; sleep in Cannaregio or Castello</td></tr><tr><td>Sat 29</td><td>Venice</td><td>Vittoria comes by train from Milan (about 2h25): a gondola, the Murano glass furnaces, the Naval History Museum by the Arsenale</td></tr><tr><td>Sun 30</td><td>Brianza</td><td>Early-morning Venice while it&#39;s empty, then the train home with Vittoria</td></tr><tr><td>Mon 31</td><td>Milan</td><td>Science and Technology Museum (a real submarine, planes, trains, Leonardo&#39;s machines), the Duomo rooftop, the San Siro stadium tour</td></tr><tr><td>Tue 1</td><td>Monza</td><td>The royal park and the Autodromo (check track-tour days); Vittoria in the evening</td></tr><tr><td>Wed 2</td><td>Modena and Maranello</td><td>Republic Day, so Vittoria is free: the Enzo Ferrari and Ferrari museums, and Lamborghini&#39;s at Sant&#39;Agata (30 min)</td></tr><tr><td>Thu 3</td><td>Lake Como or Volandia</td><td>The funicular to Brunate and a boat on the lake, or the aviation museum by Malpensa; Luca&#39;s last evening with Vittoria</td></tr><tr><td>Fri 4</td><td>Milan</td><td>Caroline collects Luca and they fly to Manchester; you fly home, landing Sat 5 Jun</td></tr></tbody></table></div>
+<p>Sleeping in Venice also exempts you from the day-tripper access fee, which for 2027 is planned to start on Good Friday at up to €10 a head, pending approval in Rome (<a href="https://www.bluewin.ch/en/news/venice-will-charge-an-admission-fee-on-even-more-days-in-2027-li.3638144" target="_blank" rel="noopener">blue News</a>).</p>
+<p>Kelly has Rome with you and Luca, then flies to Maine on Thu 27 May. Vittoria gets the Venice weekend (29–30 May) and Republic Day. Luca doesn&#39;t see Giulia unless she comes to Milan.</p>
+<h3 id="handover-with-caroline">Handover with Caroline</h3>
+<p>Caroline brings Luca to Rome on Tue 25 May (from Sydney, or from Manchester if she goes to Blackburn first) and has the ten days to herself. On Fri 4 Jun she collects him in Milan and they fly to Manchester (about 2 h) for Blackburn; you fly home the same day.</p>
+<p>If it suits Caroline better, you and Luca can fly Milan to Manchester together on Fri 4 Jun and you fly home from Manchester.</p>
+<p><strong>Paperwork for the family leg</strong></p>
+<ul><li><p>When Luca travels with only Marco, carry a signed consent letter from Caroline and a copy of his birth certificate; airlines and borders can ask for them.</p></li><li><p>Luca enters the UK on his British passport. Kelly needs a UK ETA only if she goes to London.</p></li><li><p>Marco travels in Europe on his Italian passport, so the EU&#39;s coming ETIAS authorisation doesn&#39;t apply to him. Kelly will need it on either of her passports once it starts; there&#39;s no start date yet, and reporting points to sometime in 2027 (<a href="https://navan.com/blog/when-does-etias-go-into-effect" target="_blank" rel="noopener">Navan</a>).</p></li></ul>
+<h2 id="late-summer-trip-20-aug-17-sep-2027">Late-summer trip: 20 Aug – 17 Sep 2027</h2>
+<p>California comes first, while Tahoe is in high summer and the lake is warm enough to swim, then the European summer&#39;s end: the Dolomites while the huts are open, the Aeolian sea at its warmest, and Crete in its long warm tail. It&#39;s one eastbound loop, Sydney → San Francisco → Venice → Athens → Sydney, which suits a round-the-world ticket.</p>
+<p>Leave: fly Qantas nonstop to San Francisco on Fri 20 Aug at 21:25, after work, landing at 17:45 the same Friday across the date line. Mon 23 Aug to Fri 17 Sep is 20 working days: all long service leave. You land back in Sydney on Fri 17 Sep, with the weekend to recover.</p>
+<div class="tbl"><table><thead><tr><th>#</th><th>Leg</th><th>Dates</th><th>Nights</th><th>Why it sits here</th></tr></thead><tbody><tr><td>1</td><td>California</td><td>20 – 28 Aug</td><td>8</td><td>First, while the lake is warmest; Kelly&#39;s house at Tahoe, then San Francisco for the flight to Europe, before the Labor Day weekend</td></tr><tr><td>2</td><td>Dolomites</td><td>29 Aug – 5 Sep</td><td>7</td><td>Before most huts and lifts close around 20 Sep, in settled weather as the August crowds thin</td></tr><tr><td>3</td><td>Eolie</td><td>5 – 10 Sep</td><td>5</td><td>Sea about 26 °C and summer hydrofoils running, with the islands emptying after the Italian holidays</td></tr><tr><td>4</td><td>Crete</td><td>10 – 15 Sep</td><td>5</td><td>Furthest south, so it stays warm longest; Samaria Gorge open</td></tr></tbody></table></div>
+<h3 id="california-20-28-aug-hire-car">California, 20 – 28 Aug (hire car)</h3>
+<p>Kelly&#39;s house at Lake Tahoe is the base, then two nights in San Francisco before the flight to Europe.</p>
+<div class="tbl"><table><thead><tr><th>Dates</th><th>Base</th><th>Nights</th><th>What to do</th></tr></thead><tbody><tr><td>20 – 26 Aug</td><td>Lake Tahoe, Kelly&#39;s house</td><td>6</td><td>Land at San Francisco at 17:45 on Fri 20 Aug, hire a car at the airport and drive up that evening or on Saturday morning (about 3.5 h). High summer: about 27 °C, the lake warm enough to swim, walks on the Tahoe Rim Trail and into Desolation Wilderness. Late August is the peak of the Sierra fire season, so check the air quality and fire maps before you go</td></tr><tr><td>26 – 28 Aug</td><td>San Francisco</td><td>2</td><td>Drive or take the train down (about 3.5 h). The Lands End coastal trail, the Mission, the Ferry Building</td></tr></tbody></table></div>
+<p>Sat 28 Aug: fly San Francisco to Venice overnight through a European hub, landing Sun 29 Aug. You&#39;re gone before the Labor Day weekend (4–6 Sep) fills the lake.</p>
+<h3 id="dolomites-29-aug-5-sep-hire-car-from-venice">Dolomites, 29 Aug – 5 Sep (hire car from Venice)</h3>
+<p>Land in Venice on Sun 29 Aug and pick up the car. The last days of August still have the tail of the Italian and German holidays, so walk early and keep to these quieter valleys.</p>
+<div class="tbl"><table><thead><tr><th>Dates</th><th>Base</th><th>Nights</th><th>What to do</th></tr></thead><tbody><tr><td>29 – 31 Aug</td><td>Val di Funes (Santa Maddalena or San Pietro)</td><td>2</td><td>Drive from Venice, about 3 h. The Adolf Munkel trail under the Odle peaks (about 3 h) and lunch at the Geisler Alm hut</td></tr><tr><td>31 Aug – 3 Sep</td><td>Castelrotto or Siusi, below the Alpe di Siusi</td><td>3</td><td>Cable car up to Europe&#39;s largest high meadow; hut-to-hut walks towards the Sciliar; the Val Gardena hamlets on the other side. Seceda skipped for its queues</td></tr><tr><td>3 – 5 Sep</td><td>Val Badia (La Villa or Pedraces)</td><td>2</td><td>Ladin villages and food; the Armentara meadows below Sas dla Crusc (about 3 h). Lago di Braies skipped</td></tr></tbody></table></div>
+<p>Sun 5 Sep: drive back to Venice (about 2.5 h), and you fly Venice to Catania.</p>
+<h3 id="eolie-5-10-sep">Eolie, 5 – 10 Sep</h3>
+<div class="tbl"><table><thead><tr><th>Dates</th><th>Base</th><th>Nights</th><th>What to do</th></tr></thead><tbody><tr><td>5 – 8 Sep</td><td>Salina</td><td>3</td><td>Catania to Milazzo (about 2 h) and the hydrofoil. Monte Fossa delle Felci (962 m, about 3 h up), Pollara, capers and Malvasia, granita and pane cunzato in Lingua</td></tr><tr><td>8 – 10 Sep</td><td>Stromboli</td><td>2</td><td>Sunset walk to the 400 m viewpoint with an authorised guide (about 5 h); the summit is closed to visitors. Boat to Ginostra</td></tr></tbody></table></div>
+<p>Fri 10 Sep: hydrofoil to Milazzo, then Catania to Athens to Chania.</p>
+<h3 id="crete-10-15-sep-hire-car">Crete, 10 – 15 Sep (hire car)</h3>
+<div class="tbl"><table><thead><tr><th>Dates</th><th>Base</th><th>Nights</th><th>What to do</th></tr></thead><tbody><tr><td>10 – 12 Sep</td><td>Apokoronas village (Vamos or Gavalochori)</td><td>2</td><td>Chania&#39;s old harbour, White Mountain foothill villages</td></tr><tr><td>12 – 14 Sep</td><td>Loutro, south coast</td><td>2</td><td>Car-free village reached by boat; the coast path to Chora Sfakion (about 2 h) and the Aradena gorge. Samaria (16 km, 5–7 h) if you want one big day</td></tr><tr><td>14 – 15 Sep</td><td>Chania</td><td>1</td><td>Back near the airport. Wed 15 Sep: fly Chania to Athens and home (one or two stops), landing Fri 17 Sep</td></tr></tbody></table></div>
+<p><strong>Options</strong></p>
+<ul><li><p><strong>Giulia:</strong> her Pasteur year ends in September, so she could join the Dolomites or a Greek leg.</p></li><li><p><strong>Flights:</strong> the round-the-world ticket covers Sydney to San Francisco, San Francisco to Venice and Athens to Sydney; Venice to Catania and the Greek hops can ride on it too (ITA, Aegean), and the ferries are separate.</p></li></ul>
+<h2 id="flights">Flights</h2>
+<p>Priced on Google Flights on Sun 25 Oct 2026: A$ per person including taxes, for the cheapest fare on the flight that fits the plan. Ryanair, Wizz and Scoot fares don&#39;t include bags. A dash means economy on a short hop. The spring fares were priced for the earlier March–April dates, so recheck them for the new ones.</p>
+<p><strong>Spring trip</strong></p>
+<div class="tbl"><table><thead><tr><th>Leg</th><th>Best fit</th><th>Times</th><th>Economy</th><th>Business</th></tr></thead><tbody><tr><td>Sydney → Amsterdam, both, Sun 9 May</td><td>One stop via the Gulf or Asia, landing Mon 10 May</td><td>—</td><td>not yet priced</td><td>not yet priced</td></tr><tr><td>Amsterdam → Geneva, Sat 15 May</td><td>KLM, easyJet or SWISS nonstop</td><td>about 1h30</td><td>not yet priced</td><td>—</td></tr><tr><td>Genoa → Bari, Thu 20 May</td><td>Ryanair nonstop</td><td>12:20 → 13:50</td><td>102 + bag</td><td>—</td></tr><tr><td>Bari → Rome, Tue 25 May</td><td>ITA or easyJet nonstop</td><td>about 1h30</td><td>not yet priced</td><td>—</td></tr><tr><td>Rome → Maine, Kelly, Thu 27 May</td><td>One stop via Boston or New York</td><td>—</td><td>not yet priced</td><td>—</td></tr><tr><td>Milan → Sydney, Marco, Fri 4 Jun</td><td>One or two stops, landing Sat 5 Jun</td><td>—</td><td>not yet priced</td><td>not yet priced</td></tr><tr><td>Maine → Sydney, Kelly, Sun 6 Jun</td><td>Portland or Boston, via the US west coast</td><td>—</td><td>not yet priced</td><td>not yet priced</td></tr></tbody></table></div>
+<p><strong>Late-summer trip</strong></p>
+<div class="tbl"><table><thead><tr><th>Leg</th><th>Best fit</th><th>Times</th><th>Economy</th><th>Business</th></tr></thead><tbody><tr><td>Sydney → San Francisco, Fri 20 Aug</td><td>Qantas nonstop; or United</td><td>21:25 → 17:45; 10:20 → 06:50</td><td>1,402; 1,624</td><td>8,571; 9,731</td></tr><tr><td>San Francisco → Venice, Sat 28 Aug</td><td>Lufthansa, one stop</td><td>14:40 → 13:50 Sun, 14h10</td><td>698</td><td>3,606 (TAP via Lisbon)</td></tr><tr><td>Venice → Catania, Sun 5 Sep</td><td>Wizz Air nonstop</td><td>11:15 → 13:05</td><td>32 + bag</td><td>—</td></tr><tr><td>Catania → Chania, Fri 10 Sep</td><td>Aegean via Athens</td><td>19:00 → 23:20</td><td>225</td><td>—</td></tr><tr><td>Chania → Sydney, Thu 16 Sep</td><td>Aegean and Qatar via Athens and Doha</td><td>09:25 → 17:55 Fri 17 Sep, 25h30</td><td>1,786</td><td>5,954 (Sky Express and Etihad, 08:20)</td></tr><tr><td>Total</td><td></td><td></td><td>about 4,100</td><td>about 18,400</td></tr></tbody></table></div>
+<p>Both trips, per person: about 4,200 in economy priced so far (the late-summer trip plus Genoa → Bari), with the spring long-haul legs still to price. In business, about 18,400 for the late-summer trip as separate tickets, or less with the Turkish fare below.</p>
+<p><strong>Where the hidden savings are</strong></p>
+<ul><li><p><strong>Same fare, an extra day</strong>. The early Qatar connection from Athens lands the next day, not two days later: leave Chania on Thu 16 Sep instead of Wed 15 and you still land on Fri 17 Sep at the same fare, a free extra night in Crete with no extra leave.</p></li><li><p><strong>Skip Reno.</strong> Pick up a car at San Francisco airport, drive to Tahoe and back (about 3.5 h each way) and return it there before the flight to Venice: no extra flight and no one-way fee.</p></li><li><p><strong>Turkish Airlines&#39; round-the-world fare for the late-summer trip.</strong> It goes from Australia via North America and Istanbul to Europe, and back from Europe via Istanbul and Asia, with an open jaw in Europe and free stopovers: exactly the late-summer shape (Sydney → San Francisco, stop, → Istanbul → Venice; Athens → Istanbul → Singapore → Sydney). <a href="https://www.australianfrequentflyer.com.au/turkish-airlines-rtw-fares/" target="_blank" rel="noopener">Australian Frequent Flyer&#39;s sample</a> of the same shape cost 2,105 in economy and 7,862 in business in 2024, against about 4,100 and 18,400 here, and it undercuts the Star Alliance fare (about 11,000 – 16,000 business). It&#39;s sold through agents only and prices may have moved since 2024, so get a quote before buying the late-summer legs; you&#39;d add a Chania → Athens hop.</p></li><li><p><strong>Mix airlines in business:</strong> TAP via Lisbon, San Francisco → Venice, is 3,606 against 5,306 on United.</p></li><li><p><strong>Book the bag with the low-cost hops</strong> (Wizz Venice → Catania, Ryanair Genoa → Bari); it costs more at the airport.</p></li><li><p><strong>Leave buffers on separate tickets.</strong> Bags don&#39;t transfer between them, so allow at least three hours, or a night, on self-made connections.</p></li></ul>
+<p><strong>Checked and not worth it</strong></p>
+<ul><li><p>A return starting in Italy to cover both the June flight home and the flight back out: about 3,000, more than two one-ways.</p></li><li><p>One round-the-world ticket for both trips: they now run in opposite directions.</p></li><li><p>Hidden-city tricks: they put the later legs and checked bags at risk.</p></li></ul>
+<p><strong>When to book</strong></p>
+<ul><li><p>Now: the spring long-haul as one open-jaw return on one airline (Sydney → Amsterdam, Milan → Sydney), which usually prices well below two one-ways, and Kelly&#39;s Rome → Maine. Get the Turkish quote before booking Sydney → San Francisco, San Francisco → Venice and Chania → Sydney.</p></li><li><p>Two to four months out: Ryanair, Wizz and Aegean.</p></li><li><p>Also early: Amsterdam, Annecy for the Whitsun weekend, Rome and the nights in Venice, and Camogli and the Puglia masseria for late May.</p></li></ul>
+<h2 id="extensions-worth-considering">Extensions worth considering</h2>
+<p>Each one is on the route and in season, and would replace a few days elsewhere rather than add leave.</p>
+<div class="tbl"><table><thead><tr><th>Extension</th><th>Fits where</th><th>Days</th><th>Why it suits you</th></tr></thead><tbody><tr><td>Valle Maggia, Ticino</td><td>Spring trip, instead of Liguria</td><td>2–3</td><td>Granite hamlets and waterfalls above Lake Maggiore, in Italian-speaking Switzerland, close to Milan</td></tr><tr><td>Etna&#39;s north side and the Nebrodi</td><td>Late-summer trip, after the Eolie</td><td>2–3</td><td>Lava fields, Randazzo, beech forests, black pigs and provola; Sicily&#39;s quiet interior</td></tr><tr><td>Mani peninsula, Peloponnese</td><td>Late-summer trip, instead of the Eolie</td><td>3–4</td><td>Stone tower villages, coastal mule paths, very few visitors</td></tr><tr><td>Big Island of Hawaii</td><td>Late-summer trip, Sydney to San Francisco (needs 4–5 more days of leave)</td><td>4–5</td><td>Kilauea crater walks, lava coast, Waipio valley</td></tr></tbody></table></div>
+<h2 id="open-questions">Open questions</h2>
+<ul><li data-checked="false"><p><input type="checkbox" disabled> Caroline: is she happy handing Luca over in Rome on Tue 25 May and collecting him in Milan on Fri 4 Jun for the UK?</p></li><li data-checked="false"><p><input type="checkbox" disabled> Caroline: the consent letter for Luca&#39;s ten days with Marco.</p></li><li data-checked="false"><p><input type="checkbox" disabled> Silvia and Vittoria: Venice on the weekend of 29–30 May, evenings from 30 May and Republic Day, 2 June.</p></li><li data-checked="false"><p><input type="checkbox" disabled> Giulia: the Whitsun weekend in Annecy (Sat 15 – Mon 17 May); could she come to Milan for a weekend to see Luca; and would she join the Dolomites or Greece in September?</p></li><li data-checked="false"><p><input type="checkbox" disabled> Kelly: fly Rome to Boston on Thu 27 May, then on to Maine?</p></li><li data-checked="false"><p><input type="checkbox" disabled> Economy or business on the long legs? Any Qantas, Velocity or Amex points between you, since business on points could beat everything in Flights?</p></li></ul>
+<h2 id="sources">Sources</h2>
+<ul><li><p><a href="https://education.nsw.gov.au/schooling/calendars/2027" target="_blank" rel="noopener">NSW school calendars 2027</a></p></li><li><p><a href="https://www.regione.lombardia.it/istruzione-formazione-e-lavoro/formazione-professionale/calendario-scolastico-2026-2027" target="_blank" rel="noopener">Regione Lombardia, school calendar 2026/27</a></p></li><li><p><a href="https://navan.com/blog/when-does-etias-go-into-effect" target="_blank" rel="noopener">ETIAS status</a></p></li><li><p><a href="https://www.australianfrequentflyer.com.au/community/threads/oneworld-global-explorer-fares-update.26201/latest" target="_blank" rel="noopener">oneworld Explorer fares, AFF</a> and <a href="https://www.australianfrequentflyer.com.au/star-alliance-round-the-world-guide" target="_blank" rel="noopener">Star Alliance RTW guide, AFF</a></p></li></ul>
+
+</main>
+</div>
+<script>
+const KINDS = { kids: 'With the children', pair: 'Marco and Kelly', kelly: 'Kelly on her own', usa: 'California' };
+const TRIPS = {
+  'tl-spring': {
+    title: 'Spring: Europe, ending with Luca',
+    meta: '20 days of long service leave, Mon 10 May – Fri 4 Jun',
+    out: 'Fly out Sun 9 May', home: 'Home Sat 5 Jun',
+    from: '2027-05-10', to: '2027-06-06',
+    rows: [
+      { name: 'Amsterdam', s: '2027-05-10', e: '2027-05-15', k: 'pair', note: 'Four full days' },
+      { name: 'Annecy, with Giulia', s: '2027-05-15', e: '2027-05-18', k: 'kids', note: 'Whitsun weekend; in via Geneva' },
+      { name: 'Liguria', s: '2027-05-18', e: '2027-05-20', k: 'pair', note: 'Camogli, San Fruttuoso, Portofino' },
+      { name: 'Puglia', s: '2027-05-20', e: '2027-05-25', k: 'pair', note: "Valle d'Itria, Lecce for a day, Matera" },
+      { name: 'Rome with Luca', s: '2027-05-25', e: '2027-05-28', k: 'kids', note: 'Caroline lands with Luca; Kelly with you until 27 May' },
+      { name: 'Venice and Brianza with Luca', s: '2027-05-28', e: '2027-06-04', k: 'kids', note: 'Venice with Vittoria at the weekend, then Milan, Monza, Maranello' },
+      { name: 'Kelly in Maine, then home', s: '2027-05-27', e: '2027-06-06', k: 'kelly', note: 'Flies from Rome 27 May; home to Sydney 6 Jun' }
+    ]
+  },
+  'tl-summer': {
+    title: 'Late summer: the Sierra, then mountains and islands',
+    meta: '20 days of long service leave, Mon 23 Aug – Fri 17 Sep',
+    out: 'Fly out Fri 20 Aug, after work', home: 'Home Fri 17 Sep',
+    from: '2027-08-20', to: '2027-09-17',
+    rows: [
+      { name: 'California', s: '2027-08-20', e: '2027-08-28', k: 'usa', note: "Kelly's house at Lake Tahoe, then San Francisco" },
+      { name: 'Dolomites', s: '2027-08-29', e: '2027-09-05', k: 'pair', note: 'Val di Funes, Alpe di Siusi, Val Badia' },
+      { name: 'Eolie', s: '2027-09-05', e: '2027-09-10', k: 'pair', note: 'Salina, Stromboli' },
+      { name: 'Crete', s: '2027-09-10', e: '2027-09-15', k: 'pair', note: 'Apokoronas, Loutro, Chania' }
+    ]
+  }
+};
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const d = s => new Date(s + 'T00:00:00Z');
+const days = (a, b) => (d(b) - d(a)) / 864e5;
+const fmt = s => { const x = d(s); return x.getUTCDate() + ' ' + MON[x.getUTCMonth()]; };
+const fmtRange = (a, b) => d(a).getUTCMonth() === d(b).getUTCMonth() ? d(a).getUTCDate() + ' – ' + fmt(b) : fmt(a) + ' – ' + fmt(b);
+const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+function render(id) {
+  const t = TRIPS[id], root = document.getElementById(id);
+  if (!root) return;
+  const span = days(t.from, t.to), pct = s => days(t.from, s) / span * 100;
+  const head = el('div'); head.append(el('h4', null, t.title), el('p', 'meta', t.meta));
+  const legend = el('div', 'legend');
+  [...new Set(t.rows.map(r => r.k))].forEach(k => { const s = el('span'); s.append(el('i', 'sw k-' + k), KINDS[k]); legend.append(s); });
+  const chart = el('div', 'chart'), axis = el('div', 'axis');
+  let first = d(t.from); while (first.getUTCDay() !== 1) first = new Date(first.getTime() + 864e5);
+  const wk = 7 / span * 100, off = pct(first.toISOString().slice(0, 10));
+  for (let x = first; x <= d(t.to); x = new Date(x.getTime() + 7 * 864e5)) {
+    const iso = x.toISOString().slice(0, 10), p = pct(iso); if (p > 92) break;
+    const lab = el('span', p < 4 ? 'first' : null, fmt(iso)); lab.style.left = p + '%'; axis.append(lab);
+  }
+  chart.append(axis);
+  const gridBg = `repeating-linear-gradient(90deg, transparent 0, transparent calc(${wk}% - 1px), var(--grid) calc(${wk}% - 1px), var(--grid) ${wk}%)`;
+  t.rows.forEach(r => {
+    const row = el('div', 'row'), rh = el('div', 'row-head');
+    rh.append(el('span', 'row-name', r.name), el('span', 'row-dates', fmtRange(r.s, r.e) + ' · ' + days(r.s, r.e) + 'n'));
+    const track = el('div', 'track'); track.style.background = gridBg; track.style.backgroundPosition = off + '% 0';
+    const bar = el('div', 'bar k-' + r.k); bar.style.left = pct(r.s) + '%'; bar.style.width = (days(r.s, r.e) / span * 100) + '%';
+    bar.setAttribute('role', 'img'); bar.setAttribute('aria-label', r.name + ', ' + fmtRange(r.s, r.e));
+    track.append(bar); row.append(rh, track, el('div', 'row-note', r.note)); chart.append(row);
+  });
+  const ends = el('div', 'ends'); ends.append(el('span', null, t.out), el('span', null, t.home));
+  root.replaceChildren(head, legend, chart, ends);
+}
+Object.keys(TRIPS).forEach(render);
+</script>
+</body>
+</html>
