@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
@@ -242,6 +244,19 @@ function render(id) {
   root.replaceChildren(head, legend, chart, ends);
 }
 Object.keys(TRIPS).forEach(render);
+</script>
+<script>
+// If this copy is older than the live page (stale in-app browser cache), load the fresh one.
+(function () {
+  try {
+    var mine = (document.querySelector('.updated') || {}).textContent || '';
+    var m = mine.match(/Revision (\d+)/); if (!m) return;
+    fetch(location.pathname + '?ts=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
+      var n = (t.match(/Revision (\d+)/) || [])[1];
+      if (n && +n > +m[1]) location.replace(location.pathname + '?v=' + n);
+    }).catch(function () {});
+  } catch (e) {}
+})();
 </script>
 </body>
 </html>
