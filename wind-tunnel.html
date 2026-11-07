@@ -382,7 +382,7 @@ function computeCurl(){
 }
 
 function step(){
-  for(let s=0;s<STEPS;s++){ driveBoundaries(); collide(); stream(); }
+  for(let s=0;s<STEPS;s++){ driveBoundaries(); applyGas(); collide(); stream(); }
   computeCurl();
   // NaN guard — if it ever blows up, gently reset
   if(!isFinite(rho[idx(XD>>1,YD>>1)])) initFluid();
@@ -538,6 +538,7 @@ function render(){
   ctx.imageSmoothingQuality='high';
   ctx.drawImage(off,0,0,cv.width,cv.height);
   if(showSmoke) drawSmoke();
+  drawGas();
   if(vehicle) drawVehicle();
   if(photo){                                   // crisp, full-resolution body on top
     ctx.save();
@@ -619,6 +620,7 @@ const VEHICLES={
     circles:[[1.8,18,2.5]],
     deco:[[[21,13],[27,7],[36,7],[36,13]],[[38,7],[52,7],[54,12],[38,12]]]},
   dachshund:{group:'fun',label:'Sausage dog',L:170,ground:true,
+    gas:{at:[101.5,18.5], dir:[1,0.25]},   // the bum: just behind the body, aimed back and slightly down
     color:['#b9773f','#8a5128','#4d2b14'], decoFill:'rgba(30,14,6,.75)',
     polys:[[[0,9],[2,7],[10,6],[14,2],[20,0],[26,2],[28,8],[28,16],[20,16],[12,13],[3,12],[0,11]],   // head
            [[24,10],[34,8.5],[90,8.5],[97,10],[100,14],[99,20],[94,24],[30,24],[24,22],[22,16]],     // the sausage
@@ -684,6 +686,65 @@ function drawVehicle(){
   }
   ctx.restore();
 }
+/* ---- gas: a pulsing jet injected into the flow + a green cloud riding it ---- */
+let gasPuffs=[], gasClock=0, gasOn=false;
+function vehToGrid(px,py){
+  const {v,cx,cy,deg}=vehicle, b=vehBox(v), s=v.L/b.w, a=deg*Math.PI/180;
+  const dx=(px-b.mx)*s, dy=(py-b.my)*s;
+  return [cx+dx*Math.cos(a)-dy*Math.sin(a), cy+dx*Math.sin(a)+dy*Math.cos(a)];
+}
+function gasSource(){
+  if(!vehicle||!vehicle.v.gas) return null;
+  const G=vehicle.v.gas, [gx,gy]=vehToGrid(G.at[0],G.at[1]);
+  const a=vehicle.deg*Math.PI/180, n=Math.hypot(G.dir[0],G.dir[1]);
+  const ux0=G.dir[0]/n, uy0=G.dir[1]/n;                     // screen frame, y down
+  return {gx,gy,dx:ux0*Math.cos(a)-uy0*Math.sin(a), dy:ux0*Math.sin(a)+uy0*Math.cos(a)};
+}
+function gasTick(){                          // once per frame: puff ~1 s on, ~2 s off
+  gasClock++;
+  if(!gasOn && gasClock>110+Math.random()*60){ gasOn=true; gasClock=0; }
+  else if(gasOn && gasClock>45){ gasOn=false; gasClock=0; }
+  const src=gasSource(); if(!src) return;
+  if(gasOn) for(let k=0;k<4;k++)
+    gasPuffs.push({x:src.gx+(Math.random()-0.5)*1.5, y:src.gy+(Math.random()-0.5)*1.5,
+                   vx:src.dx*0.9, vy:src.dy*0.9, age:0, life:170+Math.random()*90});
+  for(let k=gasPuffs.length-1;k>=0;k--){
+    const p=gasPuffs[k];
+    sampleVel(p.x,p.y,_v);
+    p.vx*=0.9; p.vy*=0.9;                                    // own momentum fades into the stream
+    p.x+=_v[0]*ADVECT+p.vx+(Math.random()-0.5)*0.35;
+    p.y+=-_v[1]*ADVECT+p.vy+(Math.random()-0.5)*0.35;
+    const gi=idx(Math.min(XD-1,Math.max(0,p.x|0)),Math.min(YD-1,Math.max(0,p.y|0)));
+    if(barrier[gi]){ p.y-=1; }                               // slide off the floor
+    if(++p.age>p.life || p.x>=XD-1) gasPuffs.splice(k,1);
+  }
+  if(gasPuffs.length>700) gasPuffs.splice(0,gasPuffs.length-700);
+}
+function applyGas(){                          // inside the solver: blow a jet out of the bum
+  if(!gasOn) return;
+  const src=gasSource(); if(!src) return;
+  const J=Math.min(0.2, 0.06+u0*0.9);
+  for(let dy=-2;dy<=2;dy++) for(let dx=-2;dx<=2;dx++){
+    if(dx*dx+dy*dy>4) continue;
+    const x=Math.round(src.gx+dx), y=Math.round(src.gy+dy);
+    if(x<1||x>XD-2||y<1||y>YD-2) continue;
+    const i=idx(x,y); if(barrier[i]) continue;
+    setEquil(i, J*src.dx, -J*src.dy, 1);                     // lattice uy is up-positive
+  }
+}
+function drawGas(){
+  if(!gasPuffs.length) return;
+  ctx.save();
+  ctx.globalCompositeOperation='lighter';
+  for(const p of gasPuffs){
+    const t=p.age/p.life, r=(2.2+t*10)*SX, a=0.42*(1-t)*(t<0.05?t/0.05:1);
+    const g=ctx.createRadialGradient(p.x*SX,p.y*SY,0,p.x*SX,p.y*SY,r);
+    g.addColorStop(0,`rgba(160,240,70,${a})`); g.addColorStop(0.5,`rgba(120,210,50,${a*0.45})`); g.addColorStop(1,'rgba(110,190,40,0)');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.x*SX,p.y*SY,r,0,Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
+}
+
 function vehicleIcon(v){
   const b=vehBox(v), k=Math.min(26/b.w,14/b.h);
   const tx=15-b.mx*k, ty=9-b.my*k, f=n=>(+n.toFixed(2));
@@ -784,6 +845,7 @@ function resetFlow(){
   initFluid();
   driveBoundaries();
   buildLanes();
+  gasPuffs=[]; gasOn=false; gasClock=60;
 }
 
 /* ----------------- IMAGE UPLOAD -> SILHOUETTE ----------------- */
@@ -989,7 +1051,7 @@ function loop(now){
   const dt=now-last; last=now;
   fpsSmooth=fpsSmooth*0.9 + (1000/Math.max(1,dt))*0.1;
   fpsEl.textContent=Math.round(fpsSmooth);
-  if(running){ step(); updateLanes(); }
+  if(running){ step(); updateLanes(); gasTick(); }
   render();
   requestAnimationFrame(loop);
 }
