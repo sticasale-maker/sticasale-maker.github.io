@@ -165,6 +165,17 @@
   .btn.primary{grid-column:span 2;border-color:#243949;background:#0c1a24;color:var(--cyan)}
   .btn.primary:hover{background:#0f222e}
   .btn svg{width:13px;height:13px}
+  .btn.rec{grid-column:span 2;color:var(--hot);border-color:#3a2226;background:#170c0e}
+  .btn.rec:hover{background:#1f1013}
+  .btn.rec.live{border-color:var(--hot);background:#2a0f12;color:#ffd6d2}
+  .btn.rec.ready{border-color:var(--cyan);color:var(--cyan);background:#0c1a24}
+  .btn.rec .dot{width:9px;height:9px;border-radius:50%;background:var(--hot)}
+  .btn.rec.live .dot{animation:blink 1s steps(2) infinite}
+  .btn.rec.ready .dot{background:var(--cyan)}
+  @keyframes blink{50%{opacity:.2}}
+  .stage .rectag{position:absolute;right:12px;top:10px;z-index:3;display:none;
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;color:var(--hot);text-shadow:0 1px 6px #000}
+  .stage.recording .rectag{display:block}
 
   .upload-note{
     font-family:var(--mono);font-size:10px;line-height:1.6;color:var(--ink-faint);
@@ -200,6 +211,7 @@
       <canvas id="cv"></canvas>
       <div class="tag">FLOW <b>→</b> &nbsp;·&nbsp; <span id="tagMode">VORTICITY</span></div>
       <div class="hint" id="hint">drag on the flow to sculpt the body</div>
+      <div class="rectag" id="recTag">● REC <span id="recTime">0:00</span></div>
       <span class="corner tl"></span><span class="corner tr"></span>
       <span class="corner bl"></span><span class="corner br"></span>
     </div>
@@ -257,6 +269,7 @@
           <button class="btn" id="bClear">Clear body</button>
           <button class="btn" id="bPause">Pause</button>
           <button class="btn" id="bReset">Reset flow</button>
+          <button class="btn rec" id="bRec"><span class="dot"></span><span id="recLabel">Record video</span></button>
         </div>
         <div class="upload-note" id="uNote">Photo of a car, leaf, hand, logo… the dark part becomes the body.</div>
         <input type="file" id="file" accept="image/*">
@@ -1032,6 +1045,66 @@ fileInput.onchange=e=>{
   im.onload=()=>{ loadImageToBarrier(im); URL.revokeObjectURL(url); };
   im.onerror=()=>{ document.getElementById('uNote').textContent="Couldn't read that image — try a JPG or PNG."; };
   im.src=url;
+};
+
+/* ----------------- VIDEO RECORDING ----------------- */
+// Records the tunnel canvas (max 30 s). Then the button becomes "Send / save video":
+// on phones it opens the share sheet (Messages, WhatsApp…), elsewhere it downloads.
+const REC_MAX=30;
+const bRec=document.getElementById('bRec'), recLabel=document.getElementById('recLabel');
+const stageEl=document.getElementById('stage'), recTimeEl=document.getElementById('recTime');
+let recorder=null, recChunks=[], recFile=null, recStart=0, recTimer=null;
+function recMime(){
+  const c=['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
+  return (window.MediaRecorder && c.find(t=>MediaRecorder.isTypeSupported(t))) || '';
+}
+function recUI(state){
+  bRec.classList.toggle('live',state==='live'); bRec.classList.toggle('ready',state==='ready');
+  stageEl.classList.toggle('recording',state==='live');
+  recLabel.textContent= state==='live'?'Stop recording':state==='ready'?'Send / save video':'Record video';
+}
+function startRec(){
+  if(!cv.captureStream || !window.MediaRecorder){
+    document.getElementById('uNote').textContent="This browser can't record video — try Chrome, Edge or Safari.";
+    return;
+  }
+  const mime=recMime();
+  recorder=new MediaRecorder(cv.captureStream(30), mime?{mimeType:mime,videoBitsPerSecond:6e6}:{videoBitsPerSecond:6e6});
+  recChunks=[]; recFile=null;
+  recorder.ondataavailable=e=>{ if(e.data&&e.data.size) recChunks.push(e.data); };
+  recorder.onstop=()=>{
+    const type=recorder.mimeType||mime||'video/webm';
+    const ext=type.includes('mp4')?'mp4':'webm';
+    recFile=new File(recChunks,`wind-tunnel.${ext}`,{type:type.split(';')[0]});
+    recUI('ready');
+  };
+  recorder.start(250);
+  recStart=performance.now(); recUI('live');
+  recTimer=setInterval(()=>{
+    const s=(performance.now()-recStart)/1000;
+    recTimeEl.textContent=`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+    if(s>=REC_MAX) stopRec();
+  },200);
+}
+function stopRec(){
+  clearInterval(recTimer);
+  if(recorder && recorder.state!=='inactive') recorder.stop();
+}
+async function sendRec(){
+  const f=recFile; if(!f) return;
+  if(navigator.canShare && navigator.canShare({files:[f]})){
+    try{ await navigator.share({files:[f], title:'Wind tunnel'}); }catch(e){ return; }  // cancelled: keep the clip
+  }else{
+    const a=document.createElement('a'); a.href=URL.createObjectURL(f); a.download=f.name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+  }
+  recFile=null; recUI('idle');
+}
+bRec.onclick=()=>{
+  if(recorder && recorder.state==='recording') stopRec();
+  else if(recFile) sendRec();
+  else startRec();
 };
 
 /* ----------------- CANVAS SIZE ----------------- */
