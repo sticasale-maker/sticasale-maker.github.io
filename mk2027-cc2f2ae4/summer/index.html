@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Late-summer trip, 20 Aug – 7 Sep 2027, only if spring goes well</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: one reading column; timelines are stacked bar rows, tables scroll in their own box */
+:root {
+  --bg: #f6f7f4; --surface: #ffffff; --fg: #1d2421; --muted: #5d6862; --line: #dde2dc; --grid: #e9ece7; --link: #2a62b8;
+  --kids: #2f6fd0; --kids-soft: #dce8fa; --pair: #1f8a66; --pair-soft: #d8efe5;
+  --kelly: #8a4fb3; --kelly-soft: #efe2f7; --usa: #c46a1d; --usa-soft: #f8e6d4;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141917; --surface: #1c2320; --fg: #e7ece8; --muted: #9aa59f; --line: #2e3833; --grid: #252e2a; --link: #8db6f2;
+    --kids: #7aa9f0; --kids-soft: #1f3150; --pair: #5cc79f; --pair-soft: #183a2e;
+    --kelly: #c79ae6; --kelly-soft: #3a2848; --usa: #eaa45e; --usa-soft: #45301c;
+    color-scheme: dark;
+  }
+  img.map { filter: invert(0.88) hue-rotate(180deg); }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.5; }
+.wrap {
+  max-width: 760px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: calc(20px + env(safe-area-inset-top, 0px)) calc(48px + env(safe-area-inset-bottom, 0px));
+}
+header { display: grid; gap: 4px; margin-bottom: 8px; }
+h1 { font-family: var(--display); font-size: 1.75rem; line-height: 1.15; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+.updated { color: var(--muted); font-size: 0.9rem; margin: 0; }
+h2 { font-family: var(--display); font-size: 1.35rem; line-height: 1.2; margin: 2.2em 0 0.5em; text-wrap: balance; }
+h3 { font-family: var(--display); font-size: 1.1rem; line-height: 1.25; margin: 1.8em 0 0.4em; text-wrap: balance; }
+p, ul { margin: 0.6em 0; }
+ul { padding-left: 1.2em; }
+li { margin: 0.25em 0; }
+li p { margin: 0; }
+li[data-checked] { list-style: none; margin-left: -1.2em; }
+a { color: var(--link); }
+img.map { display: block; width: 100%; height: auto; max-width: 100%; margin: 12px 0; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+.tbl { overflow-x: auto; margin: 0.8em 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); -webkit-overflow-scrolling: touch; }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+th { font-weight: 700; background: var(--grid); }
+tr:last-child td { border-bottom: 0; }
+
+/* timelines */
+.trip { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 14px; margin: 12px 0; }
+.trip h4 { font-family: var(--display); font-size: 1.1rem; margin: 0; }
+.trip .meta { color: var(--muted); font-size: 0.9rem; margin: 2px 0 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.85rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 3px; border: 1.5px solid; display: inline-block; }
+.chart { display: grid; gap: 12px; }
+.axis, .track { position: relative; }
+.axis { height: 18px; font-size: 0.75rem; color: var(--muted); }
+.axis span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.axis span.first { transform: none; }
+.row { display: grid; gap: 4px; }
+.row-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.row-name { font-weight: 700; min-width: 0; }
+.row-dates { color: var(--muted); font-size: 0.85rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.row-note { color: var(--muted); font-size: 0.85rem; }
+.track { height: 16px; border-radius: 8px; }
+.bar { position: absolute; top: 0; bottom: 0; border-radius: 8px; border: 1.5px solid; min-width: 6px; }
+.k-kids { background: var(--kids-soft); border-color: var(--kids); }
+.k-pair { background: var(--pair-soft); border-color: var(--pair); }
+.k-kelly { background: var(--kelly-soft); border-color: var(--kelly); }
+.k-usa { background: var(--usa-soft); border-color: var(--usa); }
+.ends { display: flex; justify-content: space-between; gap: 10px; font-size: 0.85rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
+@media (min-width: 640px) { h1 { font-size: 2.2rem; } .trip { padding: 20px 22px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Late-summer trip, 20 Aug – 7 Sep 2027, only if spring goes well</h1>
+  <p class="updated">Updated Sun 8 Nov 2026, 19:25 Sydney time</p>
+  <p><a href="../">← Back to the 2027 plan</a></p>
+</header>
+<main>
+<p>Decide on this after the spring trip. California comes first, while Tahoe is in high summer and the lake is warm enough to swim, then the Dolomites while the huts are open and the August crowds thin. Sydney → San Francisco → Venice → Sydney runs east the whole way, which suits a round-the-world ticket.</p>
+<p><img class="map" src="../map-summer.png" alt="Late-summer route map: Lake Tahoe, San Francisco and the Dolomites" width="1008" height="567"></p>
+<div class="trip" id="tl-summer"></div>
+
+<p>Leave: fly Qantas nonstop to San Francisco on Fri 20 Aug at 21:25, after work, landing at 17:45 the same Friday across the date line. Mon 23 Aug to Tue 7 Sep is 12 working days, all long service leave. You fly home from Venice on Sun 5 Sep and land in Sydney on Tue 7 Sep.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Leg</th>
+<th>Dates</th>
+<th>Nights</th>
+<th>Why it sits here</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>California</td>
+<td>20 – 28 Aug</td>
+<td>8</td>
+<td>First, while the lake is warmest; Kelly's house at Tahoe, then San Francisco for the flight to Europe, before the Labor Day weekend</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Dolomites</td>
+<td>29 Aug – 5 Sep</td>
+<td>7</td>
+<td>Before most huts and lifts close around 20 Sep, in settled weather as the August crowds thin</td>
+</tr>
+</tbody>
+</table></div>
+<h2>California, 20 – 28 Aug (hire car)</h2>
+<p>Kelly's house at Lake Tahoe is the base, then two nights in San Francisco before the flight to Europe.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Dates</th>
+<th>Base</th>
+<th>Nights</th>
+<th>What to do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>20 – 26 Aug</td>
+<td>Lake Tahoe, Kelly's house</td>
+<td>6</td>
+<td>Land at San Francisco at 17:45 on Fri 20 Aug, sleep near the airport after the long flight, then hire a car and drive up on Saturday morning (about 3.5 h). High summer: about 27 °C, the lake warm enough to swim, walks on the Tahoe Rim Trail and into Desolation Wilderness. Late August is the peak of the Sierra fire season, so check the air quality and fire maps before you go</td>
+</tr>
+<tr>
+<td>26 – 28 Aug</td>
+<td>San Francisco</td>
+<td>2</td>
+<td>Drive or take the train down (about 3.5 h). The Lands End coastal trail, the Mission, the Ferry Building</td>
+</tr>
+</tbody>
+</table></div>
+<p>Sat 28 Aug: fly San Francisco to Venice overnight through a European hub, landing Sun 29 Aug. You're gone before the Labor Day weekend (4–6 Sep) fills the lake.</p>
+<h2>Dolomites, 29 Aug – 5 Sep (hire car from Venice)</h2>
+<p>Land in Venice at 13:50 on Sun 29 Aug and pick up the car; after the overnight flight, take the 3-hour drive slowly with a stop on the way. The last days of August still have the tail of the Italian and German holidays, so walk early and keep to these quieter valleys.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Dates</th>
+<th>Base</th>
+<th>Nights</th>
+<th>What to do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>29 – 31 Aug</td>
+<td>Val di Funes (Santa Maddalena or San Pietro)</td>
+<td>2</td>
+<td>Drive from Venice, about 3 h. The Adolf Munkel trail under the Odle peaks (about 3 h) and lunch at the Geisler Alm hut</td>
+</tr>
+<tr>
+<td>31 Aug – 3 Sep</td>
+<td>Castelrotto or Siusi, below the Alpe di Siusi</td>
+<td>3</td>
+<td>Cable car up to Europe's largest high meadow; hut-to-hut walks towards the Sciliar; the Val Gardena hamlets on the other side. Seceda skipped for its queues</td>
+</tr>
+<tr>
+<td>3 – 5 Sep</td>
+<td>Val Badia (La Villa or Pedraces)</td>
+<td>2</td>
+<td>Ladin villages and food; the Armentara meadows below Sas dla Crusc (about 3 h). Lago di Braies skipped</td>
+</tr>
+</tbody>
+</table></div>
+<p>Sun 5 Sep: drive back to Venice (about 2.5 h), drop the car and fly home, one or two stops, landing Tue 7 Sep.</p>
+<p><strong>Options</strong></p>
+<ul>
+<li><strong>Giulia:</strong> her Pasteur year ends in September, so she could join the Dolomites.</li>
+<li><strong>Flights:</strong> the round-the-world ticket covers Sydney to San Francisco, San Francisco to Venice and Venice to Sydney.</li>
+</ul>
+<h2>Flights</h2>
+<p>Priced on Google Flights on Sun 25 Oct 2026: A$ per person including taxes, for the cheapest fare on the flight that fits the plan.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Leg</th>
+<th>Best fit</th>
+<th>Times</th>
+<th>Economy</th>
+<th>Business</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sydney → San Francisco, Fri 20 Aug</td>
+<td>Qantas nonstop; or United</td>
+<td>21:25 → 17:45; 10:20 → 06:50</td>
+<td>1,402; 1,624</td>
+<td>8,571; 9,731</td>
+</tr>
+<tr>
+<td>San Francisco → Venice, Sat 28 Aug</td>
+<td>Lufthansa, one stop</td>
+<td>14:40 → 13:50 Sun, 14h10</td>
+<td>698</td>
+<td>3,606 (TAP via Lisbon)</td>
+</tr>
+<tr>
+<td>Venice → Sydney, Sun 5 Sep</td>
+<td>One or two stops, landing Tue 7 Sep</td>
+<td>—</td>
+<td>not yet priced</td>
+<td>not yet priced</td>
+</tr>
+</tbody>
+</table></div>
+<p>About 2,100 in economy and 12,200 in business per person for Sydney → San Francisco → Venice. The Turkish Airlines round-the-world fare, TAP in business via Lisbon, and the Skip-Reno car plan are in the main plan under Flights.</p>
+<h2>What to book in advance</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>What</th>
+<th>When</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ESTA for the US on the Australian passports</td>
+<td>Any time; valid two years</td>
+<td>esta.cbp.dhs.gov, nothing else</td>
+</tr>
+<tr>
+<td>Hire cars: San Francisco (20 – 28 Aug) and Venice (29 Aug – 5 Sep)</td>
+<td>2 – 3 months out</td>
+<td>Any broker; the Venice one needs vignette-free routing, no Austria</td>
+</tr>
+<tr>
+<td>Dolomites: none of the walks or cable cars need booking; a rifugio lunch doesn't either</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+</main>
+</div>
+<script>
+const KINDS = { kids: 'With the children', pair: 'Marco and Kelly', kelly: 'Kelly on her own', usa: 'California' };
+const TRIPS = {
+  'tl-spring': {
+    title: 'Spring: Europe, ending with Luca',
+    meta: '32 days of long service leave, Mon 26 Apr – Tue 8 Jun',
+    out: 'Fly out Mon 26 Apr to Geneva', home: 'Both home Tue 8 Jun',
+    from: '2027-04-27', to: '2027-06-08',
+    rows: [
+      { name: 'Annecy, Giulia visits', s: '2027-04-27', e: '2027-05-01', k: 'kids', note: 'In via Geneva, after the local school holidays; Giulia comes down from Paris when it suits her' },
+      { name: 'Turin, then Camogli', s: '2027-05-01', e: '2027-05-04', k: 'pair', note: 'A night in Turin, two in Camogli, gone before Ascension and the fish festival' },
+      { name: 'Eolie: Salina, Stromboli', s: '2027-05-04', e: '2027-05-09', k: 'pair', note: 'Fly Genoa to Catania Tue 4 May; Salina 3 nights, Stromboli 2' },
+      { name: 'Malta and Gozo', s: '2027-05-09', e: '2027-05-14', k: 'pair', note: 'Fly Catania to Malta Sun afternoon; a night in Valletta, four on Gozo' },
+      { name: 'Puglia', s: '2027-05-14', e: '2027-05-20', k: 'pair', note: "Fly Malta to Bari Fri 14 May; Valle d'Itria, Lecce for a day, Matera" },
+      { name: 'Crete', s: '2027-05-20', e: '2027-05-28', k: 'pair', note: 'Via Athens to Chania; Apokoronas villages, Loutro. birthday in Chania on 27 May' },
+      { name: 'Rome: Luca, Caroline and Kelly', s: '2027-05-28', e: '2027-06-01', k: 'kids', note: 'Fly Chania to Rome; Caroline lands with Luca the same day. One flat for four; Kelly her own days, dinners together' },
+      { name: 'Milan, Modena, Venice with Luca', s: '2027-06-01', e: '2027-06-07', k: 'kids', note: "Fly to Milan Tue 1 Jun, Giulia's car: Milan on Republic Day, Modena and Maranello, a night in Venice, the weekend in Brianza with Vittoria; Caroline collects Luca in Milan ~7 Jun" },
+    ]
+  },
+  'tl-summer': {
+    title: 'Late summer: Tahoe, then the Dolomites',
+    meta: '12 days of long service leave, Mon 23 Aug – Tue 7 Sep',
+    out: 'Fly out Fri 20 Aug, after work', home: 'Home Tue 7 Sep',
+    from: '2027-08-20', to: '2027-09-07',
+    rows: [
+      { name: 'California', s: '2027-08-20', e: '2027-08-28', k: 'usa', note: "Kelly's house at Lake Tahoe, then San Francisco" },
+      { name: 'Dolomites', s: '2027-08-29', e: '2027-09-05', k: 'pair', note: 'Val di Funes, Alpe di Siusi, Val Badia; home from Venice 5 Sep' }
+    ]
+  }
+};
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const d = s => new Date(s + 'T00:00:00Z');
+const days = (a, b) => (d(b) - d(a)) / 864e5;
+const fmt = s => { const x = d(s); return x.getUTCDate() + ' ' + MON[x.getUTCMonth()]; };
+const fmtRange = (a, b) => d(a).getUTCMonth() === d(b).getUTCMonth() ? d(a).getUTCDate() + ' – ' + fmt(b) : fmt(a) + ' – ' + fmt(b);
+const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+function render(id) {
+  const t = TRIPS[id], root = document.getElementById(id);
+  if (!root) return;
+  const span = days(t.from, t.to), pct = s => days(t.from, s) / span * 100;
+  const head = el('div'); head.append(el('h4', null, t.title), el('p', 'meta', t.meta));
+  const legend = el('div', 'legend');
+  [...new Set(t.rows.map(r => r.k))].forEach(k => { const s = el('span'); s.append(el('i', 'sw k-' + k), KINDS[k]); legend.append(s); });
+  const chart = el('div', 'chart'), axis = el('div', 'axis');
+  let first = d(t.from); while (first.getUTCDay() !== 1) first = new Date(first.getTime() + 864e5);
+  const wk = 7 / span * 100, off = pct(first.toISOString().slice(0, 10));
+  for (let x = first; x <= d(t.to); x = new Date(x.getTime() + 7 * 864e5)) {
+    const iso = x.toISOString().slice(0, 10), p = pct(iso); if (p > 92) break;
+    const lab = el('span', p < 4 ? 'first' : null, fmt(iso)); lab.style.left = p + '%'; axis.append(lab);
+  }
+  chart.append(axis);
+  const gridBg = `repeating-linear-gradient(90deg, transparent 0, transparent calc(${wk}% - 1px), var(--grid) calc(${wk}% - 1px), var(--grid) ${wk}%)`;
+  t.rows.forEach(r => {
+    const row = el('div', 'row'), rh = el('div', 'row-head');
+    rh.append(el('span', 'row-name', r.name), el('span', 'row-dates', fmtRange(r.s, r.e) + ' · ' + days(r.s, r.e) + 'n'));
+    const track = el('div', 'track'); track.style.background = gridBg; track.style.backgroundPosition = off + '% 0';
+    const bar = el('div', 'bar k-' + r.k); bar.style.left = pct(r.s) + '%'; bar.style.width = (days(r.s, r.e) / span * 100) + '%';
+    bar.setAttribute('role', 'img'); bar.setAttribute('aria-label', r.name + ', ' + fmtRange(r.s, r.e));
+    track.append(bar); row.append(rh, track, el('div', 'row-note', r.note)); chart.append(row);
+  });
+  const ends = el('div', 'ends'); ends.append(el('span', null, t.out), el('span', null, t.home));
+  root.replaceChildren(head, legend, chart, ends);
+}
+Object.keys(TRIPS).forEach(render);
+</script>
+<script>
+// If this copy is older than the live page (stale in-app browser cache), load the fresh one.
+(function () {
+  try {
+    var mine = (document.querySelector('.updated') || {}).textContent || '';
+    var m = mine.match(/Revision (\d+)/); if (!m) return;
+    fetch(location.pathname + '?ts=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
+      var n = (t.match(/Revision (\d+)/) || [])[1];
+      if (n && +n > +m[1]) location.replace(location.pathname + '?v=' + n);
+    }).catch(function () {});
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Rome with Luca, 28 – 31 May 2027: tickets to book</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: one reading column; timelines are stacked bar rows, tables scroll in their own box */
+:root {
+  --bg: #f6f7f4; --surface: #ffffff; --fg: #1d2421; --muted: #5d6862; --line: #dde2dc; --grid: #e9ece7; --link: #2a62b8;
+  --kids: #2f6fd0; --kids-soft: #dce8fa; --pair: #1f8a66; --pair-soft: #d8efe5;
+  --kelly: #8a4fb3; --kelly-soft: #efe2f7; --usa: #c46a1d; --usa-soft: #f8e6d4;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141917; --surface: #1c2320; --fg: #e7ece8; --muted: #9aa59f; --line: #2e3833; --grid: #252e2a; --link: #8db6f2;
+    --kids: #7aa9f0; --kids-soft: #1f3150; --pair: #5cc79f; --pair-soft: #183a2e;
+    --kelly: #c79ae6; --kelly-soft: #3a2848; --usa: #eaa45e; --usa-soft: #45301c;
+    color-scheme: dark;
+  }
+  img.map { filter: invert(0.88) hue-rotate(180deg); }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.5; }
+.wrap {
+  max-width: 760px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: calc(20px + env(safe-area-inset-top, 0px)) calc(48px + env(safe-area-inset-bottom, 0px));
+}
+header { display: grid; gap: 4px; margin-bottom: 8px; }
+h1 { font-family: var(--display); font-size: 1.75rem; line-height: 1.15; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+.updated { color: var(--muted); font-size: 0.9rem; margin: 0; }
+h2 { font-family: var(--display); font-size: 1.35rem; line-height: 1.2; margin: 2.2em 0 0.5em; text-wrap: balance; }
+h3 { font-family: var(--display); font-size: 1.1rem; line-height: 1.25; margin: 1.8em 0 0.4em; text-wrap: balance; }
+p, ul { margin: 0.6em 0; }
+ul { padding-left: 1.2em; }
+li { margin: 0.25em 0; }
+li p { margin: 0; }
+li[data-checked] { list-style: none; margin-left: -1.2em; }
+a { color: var(--link); }
+img.map { display: block; width: 100%; height: auto; max-width: 100%; margin: 12px 0; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+.tbl { overflow-x: auto; margin: 0.8em 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); -webkit-overflow-scrolling: touch; }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+th { font-weight: 700; background: var(--grid); }
+tr:last-child td { border-bottom: 0; }
+
+/* timelines */
+.trip { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 14px; margin: 12px 0; }
+.trip h4 { font-family: var(--display); font-size: 1.1rem; margin: 0; }
+.trip .meta { color: var(--muted); font-size: 0.9rem; margin: 2px 0 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.85rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 3px; border: 1.5px solid; display: inline-block; }
+.chart { display: grid; gap: 12px; }
+.axis, .track { position: relative; }
+.axis { height: 18px; font-size: 0.75rem; color: var(--muted); }
+.axis span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.axis span.first { transform: none; }
+.row { display: grid; gap: 4px; }
+.row-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.row-name { font-weight: 700; min-width: 0; }
+.row-dates { color: var(--muted); font-size: 0.85rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.row-note { color: var(--muted); font-size: 0.85rem; }
+.track { height: 16px; border-radius: 8px; }
+.bar { position: absolute; top: 0; bottom: 0; border-radius: 8px; border: 1.5px solid; min-width: 6px; }
+.k-kids { background: var(--kids-soft); border-color: var(--kids); }
+.k-pair { background: var(--pair-soft); border-color: var(--pair); }
+.k-kelly { background: var(--kelly-soft); border-color: var(--kelly); }
+.k-usa { background: var(--usa-soft); border-color: var(--usa); }
+.ends { display: flex; justify-content: space-between; gap: 10px; font-size: 0.85rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
+@media (min-width: 640px) { h1 { font-size: 2.2rem; } .trip { padding: 20px 22px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Rome with Luca, 28 – 31 May 2027: tickets to book</h1>
+  <p class="updated">Updated Sun 8 Nov 2026, 19:20 Sydney time</p>
+  <p><a href="../">← Back to the 2027 plan</a></p>
+</header>
+<main>
+<p>Three days in Rome with Luca (9), Caroline and Kelly, Fri 28 to Mon 31 May 2027, before the flight to Milan on Tue 1 Jun. The sights that need a ticket, how far ahead each one has to be booked, and what to skip for a nine-year-old.</p>
+<h2>What to see with a nine-year-old, and what to skip</h2>
+<p>Your list is right. Five things, each with something a boy who likes machines can hold on to, and no galleries.</p>
+<ul>
+<li><strong>Colosseum, underground rather than arena floor.</strong> The hypogeum is the one for Luca: the lifts and trapdoors that raised animals and scenery into the arena are a machine, and the reconstructed lift is the thing he'll talk about. The arena floor comes with it, as does the Forum and Palatine. The two tickets have different rules and the underground sells out first; see the table.</li>
+<li><strong>Roman Forum and Palatine.</strong> Included in the Colosseum ticket. Keep it to about an hour and a half: the Via Sacra, the Curia, the House of the Vestals, then up the Palatine for the view over the Circus Maximus. Ruins without a story go flat quickly for a child, so pick three and tell those.</li>
+<li><strong>Pantheon.</strong> Twenty minutes, and the right twenty: the biggest unreinforced concrete dome ever built, with a hole in the top and a drain in the floor for the rain. Go when it rains if you can.</li>
+<li><strong>Appian Way.</strong> Hire bikes at the Appia Antica park office and ride the basalt road past the tombs; one catacomb (San Callisto or San Sebastiano, a 40-minute guided walk through tunnels) is plenty. On Sundays the road is closed to cars, which is the day to do it.</li>
+<li><strong>St Peter's.</strong> Inside the basilica, then the dome climb: 551 steps (or lift to the terrace, then 320), out between the inner and outer shells of the dome, and the best view in Rome. That is the Vatican for a nine-year-old. No Sistine Chapel and no Vatican Museums: three hours in corridors for a ceiling he can't see from the back.</li>
+</ul>
+<p>Skip the other museums. Borghese, Capitoline and Palazzo Massimo are for you on another trip. Two things that aren't museums and that a child likes: Castel Sant'Angelo (an emperor's tomb turned fortress, with ramparts, cannon and the pope's escape corridor; short, cheap, next to St Peter's) and the Gianicolo cannon, fired at noon every day since 1847, free, with the view over the city. Take or leave both; neither needs a ticket in advance.</p>
+<h2>Tickets to book</h2>
+<p>Prices and rules are the 2026 ones; 2027 is normally the same with a euro or two added. Everything with a date is nominative, so book in the names on the passports and carry them. Red is the one that sells out; the rest can be done in the weeks before.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Sight</th>
+<th>Book</th>
+<th>Adult / Luca</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Colosseum, Forum, Palatine: Full Experience Underground and Arena</td>
+<td><strong>Red: 30 days before, at midnight Rome time</strong></td>
+<td>€24 / €2</td>
+</tr>
+<tr>
+<td>Pantheon, timed entry</td>
+<td>A week before</td>
+<td>€7 / free, reserved</td>
+</tr>
+<tr>
+<td>Appian Way bikes</td>
+<td>A few days before, or turn up</td>
+<td>about €15 a bike</td>
+</tr>
+<tr>
+<td>Catacombs of San Callisto, with guided tour</td>
+<td>1–2 days before</td>
+<td>€10 / €7</td>
+</tr>
+<tr>
+<td>St Peter's dome</td>
+<td>Two weeks before</td>
+<td>€17 stairs, €22 lift, online</td>
+</tr>
+<tr>
+<td>Castel Sant'Angelo (optional)</td>
+<td>2–3 days before</td>
+<td>about €16 / free</td>
+</tr>
+<tr>
+<td>Trevi, Gianicolo cannon, piazzas</td>
+<td>Nothing</td>
+<td>Free</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Colosseum.</strong> Official site only, colosseo.it. The day's slots appear 30 days ahead from midnight Rome time and the underground sells out within minutes; some report timed slots opening from 8:45, so check both. Timed entry, 90 minutes inside, then the Forum and Palatine on the same ticket, valid two days. Luca's ticket is the €2 fee only. If the underground is gone: the Full Experience Arena ticket opens only 7 days before, the standard ticket (€18 / free) 30 days before, and licensed tour operators hold underground allocations at €100+ a head, the last resort.</p>
+<p><strong>Colosseum strategy: three days, three attempts.</strong> Each visit day opens 30 days ahead, so you get three shots at the underground, in this order of preference:</p>
+<ol>
+<li><strong>Thu 29 Apr for Sat 29 May, 00:00 local, from the Annecy flat.</strong> First choice: it keeps Sunday for the car-free Appian Way and Monday for a quiet St Peter's.</li>
+<li><strong>Sat 1 May for Mon 31 May, 00:00 local, the night before the train to Turin.</strong> Second choice (there is no 31 April, so the Monday opens on 1 May). If this is the one you get, St Peter's moves to the Saturday; still go at 7:00.</li>
+<li><strong>Fri 30 Apr for Sun 30 May, 00:00 local, from the Annecy flat.</strong> Last choice: it's Giro finale day and the circuit runs past the Fori Imperiali, so the area around the Colosseum is fenced and noisy from early afternoon. A morning slot is workable, but the Appian Way then moves to Monday and loses its car-free day.</li>
+</ol>
+<p>How to make the attempt count: create the colosseo.it account in advance with all four names and dates of birth saved; be logged in with payment ready before midnight Rome time; refresh at 00:00, and if nothing shows, again from 08:45; one adult per device increases the odds. Tickets are nominative and non-refundable, and the ticket is valid two days, so the Forum and Palatine can be the next day. Safety net: if the underground is gone on 29 Apr, book the standard 24H ticket (€18 each, Luca free) for the Saturday the same morning, then keep trying for the underground on the other two days; at worst you lose €54, not the visit. From 22 May the Arena-only Full Experience opens 7 days ahead, three more attempts if needed, and returns do appear at any time, so a daily check in the last fortnight is worth a minute.</p>
+<p><strong>Which products to buy on ticketing.colosseo.it (Individuals, 1–8 people).</strong> One purchase of four tickets, Luca as under-18, and a second only if the first fails:</p>
+<ul>
+<li><strong>Full Experience – Underground Levels and Arena, €24.</strong> The one you want: Colosseum, arena floor and underground at the booked time, plus the Forum, Palatine and SUPER sites, usable the day before, the same day or the day after. Its own small print: arrive 30 minutes before the visit time.</li>
+<li><strong>24H – Colosseum, Roman Forum, Palatine, €18.</strong> The insurance, bought for the Saturday only if the underground is gone at midnight; it sells out far more slowly, so there's time. Colosseum at the booked time, Forum and Palatine within 24 hours. Non-refundable, so €54 (three adults, Luca free) is lost if the underground then comes through for the Sunday or Monday.</li>
+</ul>
+<p>If the underground is gone on every attempt, the fallback is <strong>Full Experience Ticket with entry to the Arena of the Colosseum, €24</strong>, which opens 7 days ahead. Not these: <strong>24H Only Arena</strong> (€18, 20 minutes on the arena floor and the Forum, no Colosseum interior), <strong>Forum Pass SUPER</strong> (€18, no Colosseum), <strong>Full Experience – Attic</strong> (€24, the top tiers instead of the underground), the <strong>Parco Membership</strong> (excludes the attic and the underground) and the SUPER supplement.</p>
+<p><strong>Pantheon.</strong> pantheonroma.com through the Musei Italiani portal; no walk-up tickets on paid days, and Luca needs a free timed reservation of his own. Booking opens about a month ahead; afternoons are easier than mornings. Closed to visitors for Mass on Sat 17:00 and Sun 10:30.</p>
+<p><strong>Appian Way.</strong> Bikes at the park office, Via Appia Antica 58–60, or the Ecobike point by the Cecilia Metella tomb; children's bikes and e-bikes. Sunday is the car-free day. The basalt is rough; e-bikes for the adults are money well spent.</p>
+<p><strong>Catacombs.</strong> Entry includes the 40-minute guided tour. Open roughly 9–12 and 14–17; San Callisto closes on Wednesdays, San Sebastiano on Mondays, both open on your Sunday. Cool underground, bring a jumper.</p>
+<p><strong>St Peter's.</strong> The basilica is free; the security queue is the cost, so be in the square at 7:00 and go straight to the dome. Dome tickets on basilicasanpietro.va (the Fabbrica's own site; €17 stairs or €22 lift, with a basilica audio guide) or at the kiosk inside (€10 / €15). 551 steps, or lift to the terrace and 320. Knees and shoulders covered.</p>
+<p><strong>Castel Sant'Angelo.</strong> 1½ hours, next to St Peter's, same morning if wanted. <strong>Trevi:</strong> 7 am or not at all; the lower basin is €2 at peak hours.</p>
+<p>Tickets not needed: Piazza Navona, the Spanish Steps, Campo de' Fiori, the Vittoriano terrace (the lift is €15 and skippable), the Bocca della Verità (a short queue, €2 or so on the spot).</p>
+<h2>Booking calendar</h2>
+<p>Worked back from the three days: Colosseum on Sat 29, Appian Way on Sun 30, St Peter's on Mon 31. You'll be in Annecy when the Colosseum window opens, same time zone as Rome.</p>
+<ul>
+<li class="todo">☐ <strong>By Sun 25 Apr, before you fly.</strong> Set up the colosseo.it account: log-in tested, the four names and dates of birth saved exactly as on the passports (Luca as under-18), a card saved for payment. Phone alarms set for the three attempts below. All three fall while you're in Annecy, which is on the same clock as Rome, so the times are simply local: 00:00 on the night before each date, and 08:45 at breakfast for the retry. (For anyone trying in parallel from Sydney, midnight in Rome is 08:00 and 08:45 is 16:45.)</li>
+<li class="todo">☐ <strong>Thu 29 Apr 2027, 00:00 local time in Annecy, again at 08:45.</strong> Colosseum Full Experience Underground and Arena for Sat 29 May, earliest slot (8:30 or 9:00), four names. If the underground is gone, book the standard 24H ticket for the Saturday as a safety net, then try again on Fri 30 Apr (for Sun 30) and Sat 1 May (for Mon 31), Monday preferred; see the Colosseum strategy above.</li>
+<li class="todo">☐ <strong>Around 29 Apr.</strong> Pantheon for Sat 29 May, a late-afternoon slot (about 17:00), three paid plus one free child ticket.</li>
+<li class="todo">☐ <strong>Mid-May.</strong> St Peter's dome for Mon 31 May, first slot of the morning, lift or stairs; Castel Sant'Angelo for the same morning if you want it.</li>
+<li class="todo">☐ <strong>About 26 May.</strong> San Callisto for Sun 30 May, morning; bikes at the Appia Antica park office for 9:00.</li>
+<li class="todo">☐ <strong>Already in the plan.</strong> Flights Chania → Rome (28 May) and Rome → Milan (1 Jun), and the Rome flat for four, 28 – 31 May.</li>
+</ul>
+<p>The Giro d'Italia finishes in Rome on Sun 30 May. Check the final-stage circuit when it's published (usually the Fori Imperiali, Circo Massimo and the Lungotevere) and avoid booking anything timed in the centre that afternoon.</p>
+<h2>Three days, in order</h2>
+<p>Colosseum on the Saturday because that's the day the ticket window decides; the Appian Way on the Sunday because the road is closed to cars; St Peter's on the Monday because the dome is quietest first thing on a weekday. Kelly joins for dinners and whatever else she likes.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Day</th>
+<th>Morning</th>
+<th>Afternoon</th>
+<th>Evening</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fri 28</td>
+<td>Land from Crete; Caroline and Luca land at Fiumicino. Leonardo Express or a taxi to the flat</td>
+<td>Settle in, a gelato</td>
+<td>Piazza Navona, the Pantheon from outside, dinner near the flat</td>
+</tr>
+<tr>
+<td>Sat 29</td>
+<td>Colosseum at the first slot: underground, arena, then the upper tiers (90 min). Forum and Palatine straight after, about 1½ hours, up to the Palatine terrace to finish</td>
+<td>Lunch in Monti; pizza al taglio and supplì. Rest at the flat in the heat of the day</td>
+<td>Pantheon at about 17:00 (20 minutes), then Campo de' Fiori and dinner</td>
+</tr>
+<tr>
+<td>Sun 30</td>
+<td>Metro and bus, or a taxi, to the Appia Antica park office by 9:00. Bikes; San Callisto on the way out, then the road to the Cecilia Metella tomb and the Villa dei Quintili, picnic under the pines</td>
+<td>Back by early afternoon. The Giro's last stage laps the centre from mid-afternoon: watch it pass once with Luca (the team cars are half the show) from the Circo Massimo or wherever the circuit runs, then keep clear of the finish</td>
+<td>Trastevere, away from the race</td>
+</tr>
+<tr>
+<td>Mon 31</td>
+<td>In St Peter's Square before 7:00, straight to the dome, then the basilica (Pietà, the baldacchino, the size of it). Castel Sant'Angelo after, if wanted</td>
+<td>Lunch in Borgo or Prati. Gianicolo for the noon cannon and the view is a 25-minute walk from the Vatican</td>
+<td>Last dinner with Caroline; Trevi on the way home if you're near it, otherwise 7 am on the Saturday</td>
+</tr>
+<tr>
+<td>Tue 1 Jun</td>
+<td>You and Luca to Fiumicino for the Milan flight</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2>Sources</h2>
+<ul>
+<li><a href="https://colosseo.it/en/tickets/full-experience-underground-arena" target="_blank" rel="noopener">Colosseum: Full Experience Underground and Arena, official page</a></li>
+<li><a href="https://www.artvisitguide.com/colosseum-tickets-guide/" target="_blank" rel="noopener">Colosseum ticket prices 2026 and the 30-day window</a></li>
+<li><a href="https://cultura.gov.it/luogo/pantheon" target="_blank" rel="noopener">Pantheon ticket €7 from July 2026, under-18s free (Ministry of Culture)</a></li>
+<li><a href="https://thebettervacation.com/?p=170192" target="_blank" rel="noopener">Pantheon official booking site and rules</a></li>
+<li><a href="https://www.artvisitguide.com/st-peters-dome-rome-guide/" target="_blank" rel="noopener">St Peter's dome prices and steps, 2026</a></li>
+<li><a href="https://www.artvisitguide.com/catacombs-of-rome-tickets-guide/" target="_blank" rel="noopener">Catacombs of Rome: prices, hours, closing days (2026)</a></li>
+<li><a href="https://www.tour-magazin.de/en/professional-cycling/latest-news/giro-d-italia-2027-an-overview-of-all-the-stages-and-profiles/" target="_blank" rel="noopener">Giro d'Italia 2027, all stages</a></li>
+</ul>
+</main>
+</div>
+</body>
+</html>
