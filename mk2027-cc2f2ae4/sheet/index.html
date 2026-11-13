@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Marco &amp; Kelly 2027: the sheet</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: one reading column; timelines are stacked bar rows, tables scroll in their own box */
+:root {
+  --bg: #f6f7f4; --surface: #ffffff; --fg: #1d2421; --muted: #5d6862; --line: #dde2dc; --grid: #e9ece7; --link: #2a62b8;
+  --kids: #2f6fd0; --kids-soft: #dce8fa; --pair: #1f8a66; --pair-soft: #d8efe5;
+  --kelly: #8a4fb3; --kelly-soft: #efe2f7; --usa: #c46a1d; --usa-soft: #f8e6d4;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141917; --surface: #1c2320; --fg: #e7ece8; --muted: #9aa59f; --line: #2e3833; --grid: #252e2a; --link: #8db6f2;
+    --kids: #7aa9f0; --kids-soft: #1f3150; --pair: #5cc79f; --pair-soft: #183a2e;
+    --kelly: #c79ae6; --kelly-soft: #3a2848; --usa: #eaa45e; --usa-soft: #45301c;
+    color-scheme: dark;
+  }
+  img.map { filter: invert(0.88) hue-rotate(180deg); }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.5; }
+.wrap {
+  max-width: 760px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: calc(20px + env(safe-area-inset-top, 0px)) calc(48px + env(safe-area-inset-bottom, 0px));
+}
+header { display: grid; gap: 4px; margin-bottom: 8px; }
+h1 { font-family: var(--display); font-size: 1.75rem; line-height: 1.15; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+.updated { color: var(--muted); font-size: 0.9rem; margin: 0; }
+h2 { font-family: var(--display); font-size: 1.35rem; line-height: 1.2; margin: 2.2em 0 0.5em; text-wrap: balance; }
+h3 { font-family: var(--display); font-size: 1.1rem; line-height: 1.25; margin: 1.8em 0 0.4em; text-wrap: balance; }
+p, ul { margin: 0.6em 0; }
+ul { padding-left: 1.2em; }
+li { margin: 0.25em 0; }
+li p { margin: 0; }
+li[data-checked] { list-style: none; margin-left: -1.2em; }
+a { color: var(--link); }
+img.map { display: block; width: 100%; height: auto; max-width: 100%; margin: 12px 0; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+.tbl { overflow-x: auto; margin: 0.8em 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); -webkit-overflow-scrolling: touch; }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+th { font-weight: 700; background: var(--grid); }
+tr:last-child td { border-bottom: 0; }
+
+/* timelines */
+.trip { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 14px; margin: 12px 0; }
+.trip h4 { font-family: var(--display); font-size: 1.1rem; margin: 0; }
+.trip .meta { color: var(--muted); font-size: 0.9rem; margin: 2px 0 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.85rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 3px; border: 1.5px solid; display: inline-block; }
+.chart { display: grid; gap: 12px; }
+.axis, .track { position: relative; }
+.axis { height: 18px; font-size: 0.75rem; color: var(--muted); }
+.axis span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.axis span.first { transform: none; }
+.row { display: grid; gap: 4px; }
+.row-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.row-name { font-weight: 700; min-width: 0; }
+.row-dates { color: var(--muted); font-size: 0.85rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.row-note { color: var(--muted); font-size: 0.85rem; }
+.track { height: 16px; border-radius: 8px; }
+.bar { position: absolute; top: 0; bottom: 0; border-radius: 8px; border: 1.5px solid; min-width: 6px; }
+.k-kids { background: var(--kids-soft); border-color: var(--kids); }
+.k-pair { background: var(--pair-soft); border-color: var(--pair); }
+.k-open { background: transparent; border: 1.5px dashed var(--muted); }
+.k-kelly { background: var(--kelly-soft); border-color: var(--kelly); }
+.k-usa { background: var(--usa-soft); border-color: var(--usa); }
+.k-friend { background: var(--usa-soft); border-color: var(--usa); }
+.ends { display: flex; justify-content: space-between; gap: 10px; font-size: 0.85rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
+@media (min-width: 640px) { h1 { font-size: 2.2rem; } .trip { padding: 20px 22px; } }
+.n{text-align:right;white-space:nowrap}
+.foot td{font-weight:700;background:var(--grid)}
+nav.tabs{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0 0}
+td.when{white-space:nowrap}
+.wide table{min-width:960px}
+.wide td{min-width:90px}
+.wide td:first-child{white-space:nowrap;min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Marco &amp; Kelly, 2027: the sheet</h1>
+  <p class="updated">Sheet revision 21 · copied Sat 14 Nov 2026, 09:05 Sydney time</p>
+  <p><a href="../">← Back to the plan</a></p>
+  <nav class="tabs"><a href="#day-by-day">Day by day</a><a href="#nights-per-place">Nights per place</a><a href="#options">Long-haul options</a><a href="#totals">Totals</a><a href="#short-flights">Short flights</a><a href="#excluded">Excluded</a></nav>
+</header>
+<main>
+<h2 id="day-by-day">Day by day</h2>
+<p>Spring 2027, one row per day: where you sleep that night.</p>
+<div class="tbl wide"><table><thead><tr><th>Date</th><th>Sleeping in</th><th>Region</th><th>Who</th><th class=n>Night</th><th>Moves and flights</th><th>Notes</th></tr></thead><tbody><tr><td>Tue 13 Apr</td><td>On the plane</td><td>Travel</td><td>Marco</td><td class=n>1</td><td>ANA nonstop Sydney → Haneda, 20:55 → 05:45, after work</td><td></td></tr><tr><td>Wed 14 Apr</td><td>Shinjuku, Tokyo</td><td>Japan</td><td>Marco, Massimo</td><td class=n>1</td><td>Land Haneda about 05:30; Massimo lands Narita about 16:10</td><td></td></tr><tr><td>Thu 15 Apr</td><td>Chichibu</td><td>Japan</td><td>Marco, Massimo</td><td class=n>1</td><td>Red Arrow from Ikebukuro, about 80 min</td><td>Big bags stay at the Shinjuku hotel</td></tr><tr><td>Fri 16 Apr</td><td>Ikaho onsen</td><td>Japan</td><td>Marco, Massimo</td><td class=n>1</td><td>Train and bus, about 3 h</td><td></td></tr><tr><td>Sat 17 Apr</td><td>Ikaho onsen</td><td>Japan</td><td>Marco, Massimo</td><td class=n>2</td><td></td><td>Busiest ryokan night: book early</td></tr><tr><td>Sun 18 Apr</td><td>Shinjuku, Tokyo</td><td>Japan</td><td>Marco, Massimo</td><td class=n>1</td><td>Takasaki shinkansen back, about 2h30</td><td></td></tr><tr><td>Mon 19 Apr</td><td>Shinjuku, Tokyo</td><td>Japan</td><td>Marco, Massimo</td><td class=n>2</td><td>Last night with Massimo</td><td></td></tr><tr><td>Tue 20 Apr</td><td>On the plane</td><td>Travel</td><td>Marco, Kelly</td><td class=n>1</td><td>Massimo flies home. Marco: Etihad Tokyo → Prague via Abu Dhabi 18:00 → 07:05 Wed. Kelly: Etihad EY 451 + EY 155 Sydney → Prague via Abu Dhabi 15:40 → 07:05 Wed; same last flight from Abu Dhabi</td><td></td></tr><tr><td>Wed 21 Apr</td><td>Prague</td><td>Czech Republic</td><td>Marco, Kelly</td><td class=n>1</td><td>Both land in Prague in the morning</td><td></td></tr><tr><td>Thu 22 Apr</td><td>Prague</td><td>Czech Republic</td><td>Marco, Kelly</td><td class=n>2</td><td></td><td>Day out: Bohemian Switzerland or the Bohemian Paradise</td></tr><tr><td>Fri 23 Apr</td><td>Prague</td><td>Czech Republic</td><td>Marco, Kelly</td><td class=n>3</td><td></td><td></td></tr><tr><td>Sat 24 Apr</td><td>Lindau, Lake Constance</td><td>Germany: Lake Constance</td><td>Marco, Kelly</td><td class=n>1</td><td>Train Prague → Munich (about 5h30), then EuroCity to Lindau-Reutin (about 2 h)</td><td>Lunch in Munich</td></tr><tr><td>Sun 25 Apr</td><td>Lindau, Lake Constance</td><td>Germany: Lake Constance</td><td>Marco, Kelly</td><td class=n>2</td><td></td><td>Bregenz and the Pfänder cable car</td></tr><tr><td>Mon 26 Apr</td><td>Lindau, Lake Constance</td><td>Germany: Lake Constance</td><td>Marco, Kelly</td><td class=n>3</td><td></td><td>Boat to Meersburg or the Swiss shore</td></tr><tr><td>Tue 27 Apr</td><td>Annecy</td><td>France</td><td>Marco, Kelly</td><td class=n>1</td><td>Train Lindau → Zurich → Geneva (about 4h15), then the direct bus to Annecy (about 50 min)</td><td></td></tr><tr><td>Wed 28 Apr</td><td>Annecy</td><td>France</td><td>Marco, Kelly (+ Giulia)</td><td class=n>2</td><td></td><td>Giulia comes down from Paris when it suits her</td></tr><tr><td>Thu 29 Apr</td><td>Annecy</td><td>France</td><td>Marco, Kelly (+ Giulia)</td><td class=n>3</td><td></td><td></td></tr><tr><td>Fri 30 Apr</td><td>Annecy</td><td>France</td><td>Marco, Kelly (+ Giulia)</td><td class=n>4</td><td></td><td></td></tr><tr><td>Sat 1 May</td><td>Turin</td><td>Italy: Turin and Liguria</td><td>Marco, Kelly</td><td class=n>1</td><td>Train via Chambéry to Turin, about 3½ h</td><td>May Day: check trains</td></tr><tr><td>Sun 2 May</td><td>Camogli</td><td>Italy: Turin and Liguria</td><td>Marco, Kelly</td><td class=n>1</td><td>Train to Genoa and Camogli, about 2½ h</td><td></td></tr><tr><td>Mon 3 May</td><td>Camogli</td><td>Italy: Turin and Liguria</td><td>Marco, Kelly</td><td class=n>2</td><td></td><td>San Fruttuoso and Portofino day</td></tr><tr><td>Tue 4 May</td><td>Salina</td><td>Italy: Eolie</td><td>Marco, Kelly</td><td class=n>1</td><td>Ryanair Genoa → Catania 10:15 → 12:00; coach to Milazzo; hydrofoil</td><td></td></tr><tr><td>Wed 5 May</td><td>Salina</td><td>Italy: Eolie</td><td>Marco, Kelly</td><td class=n>2</td><td></td><td></td></tr><tr><td>Thu 6 May</td><td>Salina</td><td>Italy: Eolie</td><td>Marco, Kelly</td><td class=n>3</td><td></td><td></td></tr><tr><td>Fri 7 May</td><td>Stromboli</td><td>Italy: Eolie</td><td>Marco, Kelly</td><td class=n>1</td><td>Hydrofoil Salina → Stromboli</td><td></td></tr><tr><td>Sat 8 May</td><td>Stromboli</td><td>Italy: Eolie</td><td>Marco, Kelly</td><td class=n>2</td><td></td><td>Sunset walk to the 400 m viewpoint</td></tr><tr><td>Sun 9 May</td><td>Valletta</td><td>Malta</td><td>Marco, Kelly</td><td class=n>1</td><td>Hydrofoil to Milazzo, coach to Catania, Ryanair 17:20 → 18:10</td><td></td></tr><tr><td>Mon 10 May</td><td>Gozo</td><td>Malta</td><td>Marco, Kelly</td><td class=n>1</td><td>Ferry from Ċirkewwa, 25 min</td><td></td></tr><tr><td>Tue 11 May</td><td>Gozo</td><td>Malta</td><td>Marco, Kelly</td><td class=n>2</td><td></td><td></td></tr><tr><td>Wed 12 May</td><td>Gozo</td><td>Malta</td><td>Marco, Kelly</td><td class=n>3</td><td></td><td></td></tr><tr><td>Thu 13 May</td><td>Gozo</td><td>Malta</td><td>Marco, Kelly</td><td class=n>4</td><td></td><td>To decide: last night near the airport if taking the 06:10</td></tr><tr><td>Fri 14 May</td><td>Valle d&#x27;Itria masseria</td><td>Italy: Puglia</td><td>Marco, Kelly</td><td class=n>1</td><td>Ryanair Malta → Bari: 06:10 or 21:30 (the 10:35 is gone); hire car</td><td>To decide</td></tr><tr><td>Sat 15 May</td><td>Valle d&#x27;Itria masseria</td><td>Italy: Puglia</td><td>Marco, Kelly</td><td class=n>2</td><td></td><td></td></tr><tr><td>Sun 16 May</td><td>Valle d&#x27;Itria masseria</td><td>Italy: Puglia</td><td>Marco, Kelly</td><td class=n>3</td><td></td><td>Pentecost Sunday</td></tr><tr><td>Mon 17 May</td><td>Valle d&#x27;Itria masseria</td><td>Italy: Puglia</td><td>Marco, Kelly</td><td class=n>4</td><td></td><td></td></tr><tr><td>Tue 18 May</td><td>Matera</td><td>Italy: Puglia</td><td>Marco, Kelly</td><td class=n>1</td><td>Drive about 1h15</td><td></td></tr><tr><td>Wed 19 May</td><td>Matera</td><td>Italy: Puglia</td><td>Marco, Kelly</td><td class=n>2</td><td></td><td>To decide: last night near Bari airport for the 05:50</td></tr><tr><td>Thu 20 May</td><td>Apokoronas village</td><td>Greece: Crete</td><td>Marco, Kelly</td><td class=n>1</td><td>Ryanair Bari → Athens 05:50 → 08:20 (was 10:10); Aegean → Chania 11:25 → 12:15; hire car</td><td></td></tr><tr><td>Fri 21 May</td><td>Apokoronas village</td><td>Greece: Crete</td><td>Marco, Kelly</td><td class=n>2</td><td></td><td></td></tr><tr><td>Sat 22 May</td><td>Apokoronas village</td><td>Greece: Crete</td><td>Marco, Kelly</td><td class=n>3</td><td></td><td></td></tr><tr><td>Sun 23 May</td><td>Loutro</td><td>Greece: Crete</td><td>Marco, Kelly</td><td class=n>1</td><td>Drive to Chora Sfakion, boat to Loutro</td><td></td></tr><tr><td>Mon 24 May</td><td>Chania</td><td>Greece: Crete</td><td>Marco, Kelly</td><td class=n>1</td><td>Coast path back to the car, then drive to Chania, about 1h30</td><td></td></tr><tr><td>Tue 25 May</td><td>Chania</td><td>Greece: Crete</td><td>Marco, Kelly</td><td class=n>2</td><td></td><td>Birthday dinner by the old harbour</td></tr><tr><td>Wed 26 May</td><td>On the plane</td><td>Travel</td><td>Marco, Kelly</td><td class=n>1</td><td>Fly home: Chania → Athens in the morning, then Etihad via Abu Dhabi</td><td></td></tr><tr><td>Thu 27 May</td><td>Home</td><td>Travel</td><td>Marco, Kelly</td><td class=n>1</td><td>Land Sydney</td><td>Back at work Fri 28 May</td></tr></tbody></table></div>
+<h2 id="nights-per-place">Nights per place</h2>
+<div class="tbl"><table><thead><tr><th>Region</th><th class=n>Nights</th><th>Places (nights)</th></tr></thead><tbody><tr><td>Japan</td><td class=n>6</td><td>Shinjuku 3, Chichibu 1, Ikaho 2</td></tr><tr><td>Czech Republic</td><td class=n>3</td><td>Prague 3</td></tr><tr><td>Germany: Lake Constance</td><td class=n>3</td><td>Lindau 3</td></tr><tr><td>France</td><td class=n>4</td><td>Annecy 4</td></tr><tr><td>Italy: Turin and Liguria</td><td class=n>3</td><td>Turin 1, Camogli 2</td></tr><tr><td>Italy: Eolie</td><td class=n>5</td><td>Salina 3, Stromboli 2</td></tr><tr><td>Malta</td><td class=n>5</td><td>Valletta 1, Gozo 4</td></tr><tr><td>Italy: Puglia</td><td class=n>6</td><td>Valle d&#x27;Itria 4, Matera 2</td></tr><tr><td>Greece: Crete</td><td class=n>6</td><td>Apokoronas 3, Loutro 1, Chania 2</td></tr><tr><td>On the plane</td><td class=n>3</td><td></td></tr><tr class="foot"><td>Total nights away</td><td class=n>44</td><td></td></tr></tbody></table></div>
+<h2 id="options">Long-haul options</h2>
+<p>Flights within 28 h, one-way per person, A$ incl. taxes (Google Flights, 13 Nov 2026).</p>
+<div class="tbl wide"><table><thead><tr><th>Leg</th><th>Airline and route</th><th class=n>Hours</th><th class=n>Economy (A$)</th><th class=n>Business (A$)</th><th>Date</th><th>Times (local)</th><th>Notes</th></tr></thead><tbody><tr><td>Out (Marco)</td><td>ANA nonstop Sydney → Haneda</td><td class=n>9.8</td><td class=n>1,529</td><td class=n>5,969</td><td>Tue 13 Apr</td><td>20:55 → 05:45 Wed</td><td>Overnight after work</td></tr><tr><td>Out (Marco)</td><td>Qantas nonstop Sydney → Haneda</td><td class=n>9.9</td><td class=n>1,689</td><td class=n>5,657</td><td>Tue 13 Apr</td><td>20:30 → 05:25 Wed</td><td>Overnight after work</td></tr><tr><td>Out (Kelly)</td><td>Thai + Lufthansa via Bangkok and Frankfurt, Sydney → Prague</td><td class=n>25.9</td><td class=n>1,402</td><td class=n></td><td>Tue 20 Apr</td><td>14:35 → 08:30 Wed</td><td>Avoids the Gulf</td></tr><tr><td>Out (Kelly)</td><td>Etihad via Abu Dhabi, Sydney → Prague</td><td class=n>23.4</td><td class=n>1,473</td><td class=n></td><td>Tue 20 Apr</td><td>15:40 → 07:05 Wed</td><td>Via the Gulf</td></tr><tr><td>Out (Kelly)</td><td>Emirates via Dubai, Sydney → Prague</td><td class=n>24.3</td><td class=n>1,635</td><td class=n></td><td>Tue 20 Apr</td><td>20:45 → 13:00 Wed</td><td>Via the Gulf</td></tr><tr><td>Middle (Marco)</td><td>LOT via Warsaw, Tokyo → Prague</td><td class=n>17.4</td><td class=n>1,306</td><td class=n></td><td>Tue 20 Apr</td><td>22:50 → 09:15 Wed</td><td>Avoids the Gulf; lands near Kelly&#x27;s 08:30</td></tr><tr><td>Middle (Marco)</td><td>China Airlines via Taipei, Tokyo → Prague</td><td class=n>19.8</td><td class=n>1,289</td><td class=n></td><td>Tue 20 Apr</td><td>17:55 → 06:45 Wed</td><td>Avoids the Gulf</td></tr><tr><td>Middle (Marco)</td><td>Etihad via Abu Dhabi, Tokyo → Prague</td><td class=n>20.1</td><td class=n>983</td><td class=n></td><td>Tue 20 Apr</td><td>18:00 → 07:05 Wed</td><td>Via the Gulf; cheapest</td></tr><tr><td>Middle (Marco)</td><td>Finnair via Helsinki, Tokyo → Prague</td><td class=n>15.8</td><td class=n>2,571</td><td class=n></td><td>Tue 20 Apr</td><td>23:05 → 07:50 Wed</td><td>Quickest</td></tr><tr><td>Home (old: from Venice)</td><td>Austrian + Qatar via Vienna and Doha</td><td class=n>26.3</td><td class=n>1,202</td><td class=n>5,571</td><td>Mon 7 Jun</td><td>06:50 → 17:05 Tue</td><td>Via the Gulf</td></tr><tr><td>Home (old: from Venice)</td><td>Air Serbia + Qatar via Belgrade and Doha</td><td class=n>23.9</td><td class=n>1,329</td><td class=n></td><td>Mon 7 Jun</td><td>09:10 → 17:05 Tue</td><td>Via the Gulf</td></tr><tr><td>Home (old: from Venice)</td><td>Emirates via Dubai</td><td class=n>22.5</td><td class=n>1,494</td><td class=n></td><td>Mon 7 Jun</td><td>15:35 → 22:05 Tue</td><td>Via the Gulf</td></tr><tr><td>Home (old: from Venice)</td><td>Turkish + Malaysia via Istanbul and Kuala Lumpur</td><td class=n>25.9</td><td class=n>1,495</td><td class=n>5,858</td><td>Mon 7 Jun</td><td>09:40 → 19:35 Tue</td><td>Avoids the Gulf; business is the 20:00 departure, 26h25</td></tr><tr><td>Home (old: from Venice)</td><td>Turkish via Istanbul and Singapore</td><td class=n>25.3</td><td class=n>1,571</td><td class=n></td><td>Mon 7 Jun</td><td>09:40 → 19:00 Tue</td><td>Avoids the Gulf</td></tr><tr><td>Home (old: from Venice)</td><td>Air Dolomiti + Singapore Airlines via Munich and Singapore</td><td class=n>25.2</td><td class=n>2,001</td><td class=n></td><td>Mon 7 Jun</td><td>10:05 → 19:15 Tue</td><td>Avoids the Gulf</td></tr><tr><td>Home (old: from Venice)</td><td>Lufthansa + Thai via Frankfurt and Bangkok</td><td class=n>25.6</td><td class=n></td><td class=n>4,690</td><td>Mon 7 Jun</td><td>10:55 → 20:30 Tue</td><td>Avoids the Gulf; economy not priced</td></tr><tr><td>Home (old: from Venice)</td><td>Qantas Rome → Perth → Sydney</td><td class=n>21.4</td><td class=n>1,734</td><td class=n>8,302</td><td>Mon 7 Jun</td><td>11:00 → 16:25 Tue</td><td>Avoids the Gulf; needs Venice → Rome first</td></tr><tr><td>Home</td><td>Sky Express or Aegean to Athens, then Etihad via Abu Dhabi, Chania → Sydney</td><td class=n></td><td class=n></td><td class=n></td><td>Wed 26 May</td><td>lands Thu 27 May</td><td>In the plan since 14 Nov; not yet timed or priced</td></tr></tbody></table></div>
+<h2 id="totals">Totals</h2>
+<div class="tbl wide"><table><thead><tr><th>Scenario</th><th>Out</th><th>Middle</th><th>Home</th><th class=n>Per person (A$)</th><th>Notes</th></tr></thead><tbody><tr><td>Cheapest, economy (Marco)</td><td>ANA</td><td>Etihad to Prague</td><td>Austrian + Qatar</td><td class=n>3,714</td><td>Middle and home via the Gulf; home still priced from Venice, not yet from Chania</td></tr><tr><td>Cheapest, economy (Kelly)</td><td>Thai + Lufthansa to Prague</td><td>—</td><td>Austrian + Qatar</td><td class=n>2,604</td><td>Home via the Gulf; home still priced from Venice, not yet from Chania</td></tr><tr><td>Avoiding the Gulf, economy (Marco)</td><td>ANA</td><td>China Airlines to Prague</td><td>Turkish + Malaysia</td><td class=n>4,313</td><td>Home still priced from Venice, not yet from Chania</td></tr><tr><td>Avoiding the Gulf, economy (Kelly)</td><td>Thai + Lufthansa to Prague</td><td>—</td><td>Turkish + Malaysia</td><td class=n>2,897</td><td>Home still priced from Venice, not yet from Chania</td></tr><tr><td>Preferred so far (Marco), out and middle</td><td>ANA</td><td>Etihad to Prague</td><td>not chosen</td><td class=n>2,512</td><td>Home flight not chosen yet</td></tr><tr><td>Business (Marco), out and home only</td><td>Qantas</td><td>not priced</td><td>Lufthansa + Thai</td><td class=n>10,347</td><td>Excludes Tokyo → Prague; home still priced from Venice, not yet from Chania</td></tr></tbody></table></div>
+<p><strong>Points</strong></p>
+<div class="tbl"><table><thead><tr><th></th><th class=n>Amount</th><th>Notes</th></tr></thead><tbody><tr><td>Marco&#x27;s Qantas points</td><td class=n>90,000</td><td></td></tr><tr><td>One economy reward seat Sydney → Tokyo (Marco)</td><td class=n>36,200</td><td>36,200 points one-way, plus taxes</td></tr><tr><td>Cash saved on Marco&#x27;s out leg</td><td class=n>A$1,529</td><td>Using the ANA fare above</td></tr><tr><td>Business reward Sydney → Tokyo on Qantas</td><td class=n>98,400</td><td>8,400 more than the balance</td></tr></tbody></table></div>
+<h2 id="short-flights">Short flights</h2>
+<p>Short flights in Europe, one-way per person, A$ incl. taxes (Google Flights, 13 Nov 2026).</p>
+<div class="tbl wide"><table><thead><tr><th>Date</th><th>Route</th><th>Pick</th><th>Times (local)</th><th class=n>Hours</th><th class=n>A$</th><th>Notes</th></tr></thead><tbody><tr><td>Tue 4 May</td><td>Genoa → Catania</td><td>Ryanair nonstop</td><td>10:15 → 12:00</td><td class=n>1.8</td><td class=n>99</td><td>Same flight as in the plan. Cabin bag extra</td></tr><tr><td>Sun 9 May</td><td>Catania → Malta</td><td>Ryanair nonstop</td><td>17:20 → 18:10</td><td class=n>0.8</td><td class=n>31</td><td>As in the plan; also 14:55 (46) and 07:20 (87). Cabin bag extra</td></tr><tr><td>Fri 14 May</td><td>Malta → Bari</td><td>Ryanair nonstop</td><td>21:30 → 22:50</td><td class=n>1.3</td><td class=n>35</td><td>TIME CHANGED: the plan&#x27;s 10:35 is gone. Only 06:10 → 07:30 (91) or 21:30. Cabin bag extra</td></tr><tr><td>Thu 20 May</td><td>Bari → Athens</td><td>Ryanair nonstop</td><td>05:50 → 08:20</td><td class=n>1.5</td><td class=n>104</td><td>TIME CHANGED: the plan&#x27;s 10:10 is now 05:50. Alternative: ITA via Rome 06:30 → 12:30 (172). Cabin bag extra</td></tr><tr><td>Thu 20 May</td><td>Athens → Chania</td><td>Aegean nonstop</td><td>11:25 → 12:15</td><td class=n>0.8</td><td class=n>138</td><td>Separate ticket; 3 h after the Ryanair arrival. SKY express from 93 at other times</td></tr><tr class="foot"><td>Total per person</td><td></td><td></td><td></td><td class=n></td><td class=n>407</td><td></td></tr></tbody></table></div>
+<h2 id="excluded">Excluded: over 28 hours door to door</h2>
+<div class="tbl wide"><table><thead><tr><th>Leg</th><th>Airline and route</th><th class=n>Hours</th><th class=n>Economy (A$)</th><th>Why excluded</th></tr></thead><tbody><tr><td>Home</td><td>Finnair + Qantas via Helsinki and Singapore (one ticket with Qantas out, Finnair middle)</td><td class=n>36.3</td><td class=n>3,515</td><td>Over 28 h; lands Wed 9 Jun. 3,515 is the whole three-leg ticket</td></tr><tr><td>Home</td><td>American + Qantas via Dallas (same ticket)</td><td class=n>34.7</td><td class=n>3,997</td><td>Over 28 h. 3,997 is the whole three-leg ticket</td></tr><tr><td>Home</td><td>Emirates + Qantas via Dubai and Bangkok</td><td class=n>30.8</td><td class=n>1,485</td><td>Over 28 h</td></tr><tr><td>Home</td><td>Lufthansa + Qatar via Frankfurt and Doha</td><td class=n>28.1</td><td class=n>1,134</td><td>Just over 28 h</td></tr></tbody></table></div>
+</main>
+</div>
+</body>
+</html>
