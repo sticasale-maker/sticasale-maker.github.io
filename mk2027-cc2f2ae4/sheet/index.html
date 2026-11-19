@@ -91,13 +91,34 @@ td.when{white-space:nowrap}
 .days table{min-width:1500px}
 .days td:nth-child(6),.days th:nth-child(6){min-width:420px}
 .days td:nth-child(7),.days th:nth-child(7),.days td:nth-child(8),.days th:nth-child(8){min-width:220px}
+
+/* Readable cards: every wide table shows one card per row, labelled cells, no sideways scrolling */
+.wide{overflow-x:visible}
+.wide table,.days table{min-width:0;display:block}
+.wide thead{display:none}
+.wide tbody{display:block}
+.wide tr{display:block;padding:12px 14px;border-bottom:1px solid var(--line)}
+.wide tr:last-child{border-bottom:0}
+.wide td{display:block;border:0;padding:2px 0;min-width:0!important;white-space:normal!important;text-align:left}
+.wide td:empty{display:none}
+.wide td:first-child{font-weight:700;font-size:1rem;padding-bottom:4px}
+.wide td[data-label]:not(:first-child)::before{content:attr(data-label) ": ";font-weight:700;color:var(--muted)}
+.wide tr.foot{background:var(--grid)}
+.days td:nth-child(2),.days td:nth-child(3),.days td:nth-child(4),.days td:nth-child(5){display:inline;padding:0}
+.days td:nth-child(2)::before,.days td:nth-child(3)::before,.days td:nth-child(4)::before,.days td:nth-child(5)::before{content:""!important}
+.days td:nth-child(2){font-weight:700}
+.days td:nth-child(3)::before{content:" · "!important;font-weight:400}
+.days td:nth-child(4)::before{content:" · "!important;font-weight:400}
+.days td:nth-child(5)::before{content:" · night "!important;font-weight:400;color:var(--muted)}
+.days td:nth-child(5){color:var(--muted)}
+.days td:nth-child(6){margin-top:6px}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
   <h1>Marco &amp; Kelly, 2027: the sheet</h1>
-  <p class="updated">Sheet revision 99 · copied Thu 19 Nov 2026, 20:50 Sydney time</p>
+  <p class="updated">Sheet revision 99 · copied Thu 19 Nov 2026, 20:50 Sydney time · layout updated 19 Nov, 22:45</p>
   <p><a href="../">← Back to the plan</a></p>
   <nav class="tabs"><a href="#day-by-day">Day by day</a><a href="#nights-per-place">Nights per place</a><a href="#options">Long-haul options</a><a href="#totals">Totals</a><a href="#short-flights">Short flights</a><a href="#excluded">Excluded</a></nav>
 </header>
@@ -123,5 +144,13 @@ td.when{white-space:nowrap}
 <div class="tbl wide"><table><thead><tr><th>Leg</th><th>Airline and route</th><th class=n>Hours</th><th class=n>Economy (A$)</th><th>Why excluded</th></tr></thead><tbody><tr><td>Home</td><td>Finnair + Qantas via Helsinki and Singapore (one ticket with Qantas out, Finnair middle)</td><td class=n>36.3</td><td class=n>3,515</td><td>Over 28 h; lands Wed 9 Jun. 3,515 is the whole three-leg ticket</td></tr><tr><td>Home</td><td>American + Qantas via Dallas (same ticket)</td><td class=n>34.7</td><td class=n>3,997</td><td>Over 28 h. 3,997 is the whole three-leg ticket</td></tr><tr><td>Home</td><td>Emirates + Qantas via Dubai and Bangkok</td><td class=n>30.8</td><td class=n>1,485</td><td>Over 28 h</td></tr><tr><td>Home</td><td>Lufthansa + Qatar via Frankfurt and Doha</td><td class=n>28.1</td><td class=n>1,134</td><td>Just over 28 h</td></tr></tbody></table></div>
 </main>
 </div>
+<script>
+document.querySelectorAll('.wide table').forEach(function(t){
+  var heads=[].map.call(t.querySelectorAll('thead th'),function(h){return h.textContent.trim();});
+  t.querySelectorAll('tbody tr').forEach(function(r){
+    [].forEach.call(r.children,function(c,i){ if(heads[i]) c.setAttribute('data-label',heads[i]); });
+  });
+});
+</script>
 </body>
 </html>
