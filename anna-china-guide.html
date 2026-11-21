@@ -1,0 +1,171 @@
+<!DOCTYPE html><html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>@charset "utf-8";
+
+@layer claude-scrollbar {
+  * { scrollbar-width: thin; }
+  html { scrollbar-color: rgba(128, 128, 128, 0.5) transparent; }
+}</style><style>@charset "utf-8";
+
+:root { --ink: #1d2433; --muted: #5b6475; --accent: #c8102e; --bg: #fbfaf7; --card: #fff; --line: #e6e2da; --warn: #fff4e5; --warnline: #f0b35a; }
+
+* { box-sizing: border-box; }
+
+body { margin: 0px; background: var(--bg); color: var(--ink); font: 17px / 1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; text-size-adjust: 100%; }
+
+header { background: var(--accent); color: rgb(255, 255, 255); padding: 28px 20px 22px; }
+
+header h1 { margin: 0px; font-size: 1.7rem; line-height: 1.2; }
+
+header p { margin: 8px 0px 0px; opacity: 0.9; font-size: 0.95rem; }
+
+nav { position: sticky; top: 0px; background: rgb(255, 255, 255); border-bottom: 1px solid var(--line); overflow-x: auto; white-space: nowrap; padding: 10px 12px; z-index: 5; }
+
+nav a { display: inline-block; margin-right: 14px; color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.9rem; }
+
+main { max-width: 720px; margin: 0px auto; padding: 16px 18px 60px; }
+
+section { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 6px 20px 14px; margin: 18px 0px; scroll-margin-top: 56px; }
+
+h2 { font-size: 1.25rem; margin: 16px 0px 8px; }
+
+ul { padding-left: 1.2em; margin: 8px 0px; }
+
+li { margin: 6px 0px; }
+
+.warn { background: var(--warn); border-left: 4px solid var(--warnline); padding: 10px 14px; border-radius: 8px; margin: 10px 0px; }
+
+.small { color: var(--muted); font-size: 0.85rem; }
+
+code { background: rgb(241, 238, 232); padding: 1px 5px; border-radius: 4px; font-size: 0.9em; word-break: break-all; }
+
+.check li { list-style: none; margin-left: -1.2em; }
+
+.check input { transform: scale(1.25); margin-right: 10px; accent-color: var(--accent); }
+
+.em { display: flex; gap: 10px; flex-wrap: wrap; margin: 8px 0px; }
+
+.em span { background: rgb(241, 238, 232); border-radius: 8px; padding: 6px 10px; font-weight: 600; }</style><style>@charset "utf-8";
+
+.__cwhr-sel { outline-offset: 0px; outline: rgb(173, 126, 31) solid 1px !important; }
+
+html[data-cwhr-mode]:not(#__cwhr_), html[data-cwhr-mode] :not(#__cwhr_) { cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'24'%20height%3D'24'%20viewBox%3D'0%200%2024%2024'%3E%3Cpath%20d%3D'M12%20.5h0A11.5%2011.5%200%200%201%2023.5%2012v0A11.5%2011.5%200%200%201%2012%2023.5H2.5a2%202%200%200%201-2-2V12A11.5%2011.5%200%200%201%2012%20.5Z'%20fill%3D'%23fff'%20stroke%3D'rgba(0%2C0%2C0%2C0.22)'%20stroke-width%3D'1'%2F%3E%3C%2Fsvg%3E") 1 23, url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAACjklEQVR4AbRWS2gaURR9TGpiFTUEWpKQkA+EruqizWcRSBRT/G8KKpXiyo0ra1fVNiDFLmypFUo3iht/iO4Uay1FGwtFECl1p6KWLly4CGqrSMTY+wRFQ7WhGYd7Zu697845b+7M8B6BJh+UxcXFG3a7XeTxeHQAC+C12+1+ZLPZhHgMbp8FjLWxAkaj8U48Hg8lEomfIpEoLBaLLTKZTAd4LJFI3kD8HsZ+xGKxoMFgYI9T+JvAtUAg8FylUn3hcDj8ra0t6vLyMmKxWIhCofSAfZyDMRqXy+Wr1eqvPp/vKYjMAEZsRMDpdN6MRCKf+Xz+8cbGBm2kckIAtXShUGgKh8Mnfr9/Ybh0IKDT6a4vLS19EggE+wwGY7jmUj6TyUTQyv35+fmP0MbBexkISKVS+97e3u1LsU0oAo67Go3G1i/pCZjN5t3Nzc0H/zPzPlH/ip8EWvbQYrHs4hwWmN3e3n62traGfZy7MtbX12fYbPYTIKIQOzs7C6urq/cgINVWVlaO4EtjEXq9nken06mksgMZtJthtVp5xNzcHBsEIEWu0Wg0RKVS2USz2WTigFx6hPCkMTfRarXgB6WQzd/j63Q6bdK+nB7j0KnRaCCCIMpTE4D2oEql8m1qAvV6/VSr1U5PIJvN+qFjv6fyBIVC4ZfD4XgJAmekC9RqNZROp1+FQqESCCDSBWCVO1EoFC8wOQZpAnjm0Wj0O/xX94H4HNAzotvtNnreFU6lUgllMplAMpnclcvlp8NURC6Xi8BLGc5N9NvtNqpWq6hcLqN8Pn8OLUkAMe/g4EAOG4WzizcTJpPpA6zFIpfL9Ra2I45/IRgM2lKp1LtisXjs9XpvHR4eHimVythF4n78BwAA//8r8OPFAAAABklEQVQDAPCY8Oae0TJxAAAAAElFTkSuQmCC") 1 23, default !important; }
+
+html[data-cwhr-mode][data-cwhr-composing]:not(#__cwhr_), html[data-cwhr-mode][data-cwhr-composing] :not(#__cwhr_) { cursor: default !important; }</style>
+    
+  
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>China Essentials for Anna</title>
+
+</head>
+<body id="artifacts-component-root-html">
+<header>
+<h1>China Essentials for Anna</h1>
+<p>Two weeks · Beijing, Shanghai &amp; more · Australian passport · Samsung phone<br>Updated 21 November 2026</p>
+</header>
+<nav>
+<a href="https://www.claudeusercontent.com/?domain=claude.ai&amp;parentOrigin=https%3A%2F%2Fclaude.ai&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true&amp;theme=light&amp;contentType=text%2Fhtml#visa">Visa</a><a href="https://www.claudeusercontent.com/?domain=claude.ai&amp;parentOrigin=https%3A%2F%2Fclaude.ai&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true&amp;theme=light&amp;contentType=text%2Fhtml#internet">Internet</a><a href="https://www.claudeusercontent.com/?domain=claude.ai&amp;parentOrigin=https%3A%2F%2Fclaude.ai&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true&amp;theme=light&amp;contentType=text%2Fhtml#pay">Paying</a><a href="https://www.claudeusercontent.com/?domain=claude.ai&amp;parentOrigin=https%3A%2F%2Fclaude.ai&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true&amp;theme=light&amp;contentType=text%2Fhtml#maps">Maps</a><a href="https://www.claudeusercontent.com/?domain=claude.ai&amp;parentOrigin=https%3A%2F%2Fclaude.ai&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true&amp;theme=light&amp;contentType=text%2Fhtml#apps">Apps</a><a href="https://www.claudeusercontent.com/?domain=claude.ai&amp;parentOrigin=https%3A%2F%2Fclaude.ai&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true&amp;theme=light&amp;contentType=text%2Fhtml#passport">Passport</a><a href="https://www.claudeusercontent.com/?domain=claude.ai&amp;parentOrigin=https%3A%2F%2Fclaude.ai&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true&amp;theme=light&amp;contentType=text%2Fhtml#bits">Practical</a><a href="https://www.claudeusercontent.com/?domain=claude.ai&amp;parentOrigin=https%3A%2F%2Fclaude.ai&amp;errorReportingMode=parent&amp;formattedSpreadsheets=true&amp;theme=light&amp;contentType=text%2Fhtml#checklist">Checklist</a>
+</nav>
+<main>
+<p>Do the "before you fly" items at home, on home Wi-Fi, with your Australian SIM working. Several of them need an SMS code, and many apps and websites can't be downloaded once you're in China.</p>
+
+<section id="visa"><h2>1. Visa: not needed, with one date to check</h2>
+<ul>
+<li>Australian passport holders can enter China <b>visa-free for up to 30 days per entry</b> for tourism. Two weeks is well within that.</li>
+</ul>
+<div class="warn"><b>The catch:</b> the visa-free scheme is officially confirmed only until <b>31 December 2026</b>. As of 20 November 2026 China hadn't announced an extension into 2027. It has renewed every year so far, each time in November. <b>If you arrive in 2027, check the Chinese Embassy website for the extension notice before you fly.</b> If it hasn't come through, you'd need a tourist (L) visa.</div>
+<ul>
+<li>Passport: at least 6 months' validity left and a couple of blank pages.</li>
+<li>Carry a printed or saved copy of your return flight and your first hotel booking in case immigration asks.</li>
+<li><b>Arrival card:</b> fill it in online before you fly. It's free at <code>s.nia.gov.cn/ArrivalCardFillingPC/</code>, in the "NIA 12367" app, or in the Alipay mini-program. Save the QR code. Avoid any site that charges for it. Paper cards and airport kiosks are still available as a fallback.</li>
+</ul></section>
+
+<section id="internet"><h2>2. Phone and internet: the most important part</h2>
+<p>On any Chinese network (hotel Wi-Fi, café Wi-Fi, a Chinese SIM) these are <b>blocked</b>: Google (Search, Maps, Gmail, Drive, Translate, <b>Play Store</b>), WhatsApp, Instagram, Facebook, YouTube, ChatGPT and most Western news sites.</p>
+<p><b>The fix is a data connection that routes outside China. You then don't need a VPN.</b></p>
+<ul>
+<li><b>Option A: a travel eSIM</b> (Airalo, Holafly, Nomad, Saily, Trip.com and similar). Pick a mainland China plan that says Google/WhatsApp work. Install it at home and switch it on when you land. To check your Samsung supports eSIM: Settings › Connections › SIM manager › "Add eSIM".</li>
+<li><b>Option B: Australian roaming</b> (Telstra, Optus or Vodafone international day pass). It's dearer but needs no setup, and everything works because your traffic goes through Australia.</li>
+<li><b>VPN: backup only</b>, for hotel Wi-Fi. Install, pay for and test it <b>in Australia</b>, because VPN sites and app downloads are blocked inside China. VPNs got less reliable there in 2026.</li>
+</ul>
+<p><b>Samsung-specific:</b></p>
+<ul>
+<li>The Google Play Store won't load in China. <b>Install every app before you leave.</b></li>
+<li>Samsung Wallet and Google Pay don't work for payments there. Use Alipay.</li>
+<li>Keep your <b>Australian SIM active for SMS</b> (bank and Alipay codes). If you use an eSIM for data, turn data roaming off on the Australian SIM so you don't get a bill.</li>
+<li>Public Wi-Fi often needs a Chinese phone number, which is one more reason to rely on mobile data.</li>
+</ul></section>
+
+<section id="pay"><h2>3. How to pay</h2>
+<p>China is almost cashless. People pay by scanning QR codes everywhere, even at street stalls.</p>
+<ul>
+<li><b>Alipay is your main tool.</b> Sign up with your Australian mobile number, verify your passport and link a Visa or Mastercard. Visa is reported to be the most reliable. Make a small test payment before you depend on it.</li>
+<li><b>WeChat:</b> install it too. It works as a backup wallet with foreign cards, and it's how locals, guides and hotels will message you.</li>
+<li><b>Link two different cards</b> in case one gets declined, and tell both banks you're travelling.</li>
+<li><b>Fees:</b> small payments are generally free, but about 3% has applied above ¥200. Check in the app. A no-foreign-fee travel card helps.</li>
+<li><b>Cards directly:</b> fine at big hotels, malls and chains, rarely anywhere small.</li>
+<li><b>Cash:</b> carry ¥500–1,000 in small notes as a backup. Airport and Bank of China ATMs take Australian cards.</li>
+</ul></section>
+
+<section id="maps"><h2>4. Maps and getting around</h2>
+<ul>
+<li><b>Don't rely on Google Maps, even with an eSIM.</b> Its data is often out of date, and China's shifted coordinate system can put your blue dot hundreds of metres from where you really are.</li>
+<li><b>Use Amap (Gaode Maps, 高德地图).</b> It has English, live traffic and proper public-transport routing.</li>
+<li><b>Save every address in Chinese characters.</b> Paste them into Amap or DiDi, and show them to drivers.</li>
+<li><b>Taxis: DiDi.</b> Use the app or the DiDi mini-program inside Alipay, which is in English and pays automatically. Avoid touts at airports and stations.</li>
+<li><b>Metro:</b> scan the transport QR code in Alipay at the gate (Alipay › Transport).</li>
+<li><b>Trains: your passport is your ticket.</b> Book on Trip.com or 12306 (both in English). Check <b>which station</b>, because big cities have several (Beijing South, Beijing West, Shanghai Hongqiao…). Allow 45–60 minutes for passport and security checks.</li>
+</ul></section>
+
+<section id="apps"><h2>5. Apps to install before flying</h2>
+<ul>
+<li><b>Alipay</b>: payments, DiDi, metro, translator</li>
+<li><b>WeChat</b>: messaging, backup payments</li>
+<li><b>Amap</b>: maps</li>
+<li><b>DiDi</b>: taxis (optional if you use it via Alipay)</li>
+<li><b>Trip.com</b>: trains, flights, hotels</li>
+<li><b>Google Translate</b> with the <b>Chinese offline pack downloaded</b> (or Microsoft Translator)</li>
+<li>Your eSIM app, plus a VPN if you've decided on one</li>
+<li>Save offline copies of bookings, tickets and a passport scan on the phone itself, not only in Gmail or Google Drive</li>
+</ul></section>
+
+<section id="passport"><h2>6. Passport and registration</h2>
+<ul>
+<li><b>Carry your passport at all times.</b> You need it for trains, hotels, museums and many attractions.</li>
+<li>Big attractions (Forbidden City etc.) are booked against your passport number, so the name and number on your bookings must <b>exactly match</b> your passport.</li>
+<li>Hotels register you with the police automatically. If you stay in a private home, you must register at the local police station within 24 hours.</li>
+</ul></section>
+
+<section id="bits"><h2>7. Practical bits</h2>
+<ul>
+<li><b>Power:</b> 220V. Australian plugs fit most Chinese wall sockets, so you usually don't need an adapter.</li>
+<li><b>Emergency numbers:</b></li>
+</ul>
+<div class="em"><span>Police 110</span><span>Ambulance 120</span><span>Fire 119</span></div>
+<ul>
+<li><b>Australian help:</b> Embassy in Beijing, Consulate-General in Shanghai, and DFAT's 24-hour Consular Emergency Centre on <a href="tel:+61262613305">+61 2 6261 3305</a>. Register your trip on Smartraveller.</li>
+<li>Get <b>travel insurance</b> and keep the policy saved offline.</li>
+<li>Keep medication in its original packaging with a copy of the prescription.</li>
+<li>Carry tissues and hand sanitiser. Many toilets don't supply paper.</li>
+</ul></section>
+
+<section id="checklist"><h2>8. Before-you-fly checklist</h2>
+<ul class="check">
+<li><label><input type="checkbox"> Visa-free status checked (if you arrive on or after 1 Jan 2027)</label></li>
+<li><label><input type="checkbox"> Passport valid 6+ months; bookings match it exactly</label></li>
+<li><label><input type="checkbox"> Online arrival card done, QR code saved</label></li>
+<li><label><input type="checkbox"> eSIM installed or roaming pack on</label></li>
+<li><label><input type="checkbox"> Alipay verified, two cards linked, test payment made</label></li>
+<li><label><input type="checkbox"> WeChat installed and logged in</label></li>
+<li><label><input type="checkbox"> Amap, DiDi, Trip.com and translator installed; offline Chinese pack downloaded</label></li>
+<li><label><input type="checkbox"> Addresses saved in Chinese characters</label></li>
+<li><label><input type="checkbox"> Banks told; some cash on hand</label></li>
+<li><label><input type="checkbox"> Insurance, Smartraveller, documents saved offline</label></li>
+</ul>
+<p class="small">Ticks are saved on this phone only.</p></section>
+
+<p class="small">Sources: Chinese Consulate-General Adelaide (visa-free notice), China National Immigration Administration, Beijing and Shanghai government English portals, and current travel/payment guides. Rules change, so recheck the visa point close to departure.</p>
+</main>
+
+
+
+</body></html>
